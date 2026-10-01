@@ -1,150 +1,265 @@
-.page {
-  --background: #fafafa;
-  --foreground: #fff;
+/* Hero */
+.hero {
+  background: var(--color-primary-soft);
+}
 
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
+.heroInner {
+  padding-block: var(--space-section);
   display: flex;
-  flex: 1;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  gap: var(--space-xl);
+  text-align: center;
 }
 
-.main {
-  display: flex;
-  flex: 1;
+.heroTitle {
+  max-width: 640px;
+  text-wrap: balance;
+}
+
+.heroText {
+  max-width: 560px;
+  color: var(--color-charcoal);
+}
+
+/* Formulaire de recherche */
+.search {
   width: 100%;
-  max-width: 800px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
-}
-
-.intro {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
   text-align: left;
-  gap: 24px;
 }
 
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
-}
-
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
+.field {
+  flex: 1 1 160px;
   display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.label {
   font-size: 14px;
+  font-weight: 500;
+  line-height: 1.43;
 }
 
-.ctas a {
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-full);
+  font-size: 16px;
+}
+
+.input::placeholder {
+  color: var(--color-body);
+}
+
+/* Types de bien */
+.types {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
+  gap: var(--space-sm);
+}
+
+.typesLabel {
+  font-size: 14px;
+  color: var(--color-charcoal);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 14px;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Sections */
+.section {
+  padding-top: var(--space-section);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-md);
+}
+
+.textLink {
+  font-size: 14px;
   font-weight: 500;
+  color: var(--color-link);
 }
 
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
-  gap: 8px;
+.textLink:hover {
+  text-decoration: underline;
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.muted {
+  font-size: 14px;
+  line-height: 1.43;
+  color: var(--color-body);
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
+/* Villes */
+.cityGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: var(--space-lg);
+}
 
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
+.cityCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+}
+
+.cityCard:hover {
+  border-color: var(--color-primary);
+}
+
+.cityLink {
+  margin-top: auto;
+  padding-top: var(--space-sm);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-link);
+}
+
+/* Annonces récentes */
+.listingGrid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  gap: var(--space-xxl) var(--space-xl);
+}
+
+/* Comment ça marche */
+.steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: var(--space-xxl);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.stepNumber {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.stepText {
+  font-size: 14px;
+  line-height: 1.43;
+  color: var(--color-body);
+}
+
+/* Appel aux propriétaires : le seul bloc sombre de la page */
+.ctaSection {
+  padding-block: var(--space-section);
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl);
+  padding: var(--space-xxl);
+  background: var(--color-surface-dark);
+  border-radius: var(--radius-lg);
+  color: var(--color-on-dark);
+}
+
+.ctaText {
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ctaMuted {
+  color: var(--color-on-dark-mute);
+}
+
+/* Espacement des sections : 88 px → 64 px (tablette) → 48 px (mobile) */
+@media (max-width: 860px) {
+  .heroInner {
+    padding-block: 64px;
+  }
+  .section {
+    padding-top: 64px;
+  }
+  .ctaSection {
+    padding-block: 64px;
   }
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
+@media (max-width: 640px) {
+  .heroInner {
+    padding-block: 48px;
   }
-
-  .intro {
-    gap: 16px;
+  .section {
+    padding-top: 48px;
   }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
+  .ctaSection {
+    padding-block: 48px;
   }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
+  .searchButton {
+    width: 100%;
   }
-
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
+  .listingGrid {
+    gap: var(--space-lg);
   }
-}
-
-.code {
-  font-family: var(--font-geist-mono);
-  font-size: 0.9em;
-  background: color-mix(in srgb, currentColor 8%, transparent);
-  padding: 0.1em 0.4em;
-  border-radius: 6px;
+  /* Sur mobile, 4 annonces suffisent : le lien « Voir toutes les annonces » mène au reste. */
+  .listingGrid > li:nth-child(n + 5) {
+    display: none;
+  }
+  .cta {
+    padding: var(--space-xl);
+  }
 }

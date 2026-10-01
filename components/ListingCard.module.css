@@ -1,0 +1,55 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.photo {
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-soft);
+  border: 1px dashed var(--color-hairline-strong);
+  border-radius: var(--radius-lg);
+  color: var(--color-body);
+}
+
+.card:hover .photo {
+  border-color: var(--color-primary);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+}
+
+.price {
+  font-weight: 600;
+}
+
+.perMonth {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-body);
+}
+
+.city {
+  color: var(--color-body);
+}
+
+@media (max-width: 640px) {
+  .compactOnMobile {
+    flex-direction: row;
+    align-items: center;
+  }
+  .compactOnMobile .photo {
+    width: 112px;
+    flex: none;
+  }
+  .compactOnMobile .body {
+    min-width: 0;
+  }
+}
