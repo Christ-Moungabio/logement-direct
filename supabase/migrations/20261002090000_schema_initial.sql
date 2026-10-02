@@ -35,6 +35,25 @@ create table public.neighborhoods (
     unique (id, city_id)
 );
 
+-- Données de départ : V1 limitée à Brazzaville.
+insert into public.cities (name) values ('Brazzaville');
+
+insert into public.neighborhoods (city_id, name)
+select c.id, n.name
+from public.cities c
+cross join (values
+    ('Makélékélé'),
+    ('Bacongo'),
+    ('Poto-Poto'),
+    ('Moungali'),
+    ('Ouenzé'),
+    ('Talangaï'),
+    ('Mfilou'),
+    ('Madibou'),
+    ('Djiri')
+) as n(name)
+where c.name = 'Brazzaville';
+
 create table public.profiles (
     id uuid primary key references auth.users(id) on delete cascade,
     full_name text not null,
@@ -695,5 +714,13 @@ create policy "Les photos suivent la visibilité de l’annonce dans le stockage
         and exists (
             select 1 from public.listings l
             where l.id::text = (storage.foldername(name))[1]
+              and (
+                  (
+                      l.status in ('scheduled', 'published')
+                      and l.visible_from <= now()
+                  )
+                  or l.owner_id = (select auth.uid())
+                  or (select public.is_admin())
+              )
         )
     );
