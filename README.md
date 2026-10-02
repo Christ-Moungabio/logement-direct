@@ -34,6 +34,7 @@ La réservation finale et la caution se font en dehors de la plateforme. Les pai
 
 Le schéma initial de la base est dans [`supabase/migrations/20261002090000_schema_initial.sql`](supabase/migrations/20261002090000_schema_initial.sql).
 Une annonce publiée devient visible après 5 minutes, sans validation préalable. Ses modifications sont immédiates.
+Cette première migration couvre les fonctionnalités Must ; les visites, avis et notifications seront ajoutés dans des migrations ultérieures.
 
 ## Prérequis
 
