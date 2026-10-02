@@ -2,7 +2,6 @@ import { Nunito } from "next/font/google";
 import { SITE } from "../lib/constants";
 import "./globals.css";
 
-// Police des titres : SF Pro Rounded sur Apple, Nunito ailleurs (variable --font-display).
 const nunito = Nunito({
   subsets: ["latin"],
   variable: "--font-nunito",

@@ -1,34 +1,46 @@
+import Image from "next/image";
 import Link from "next/link";
+import { MapPin } from "lucide-react";
 import { getCityLabel, getPropertyTypeLabel } from "../lib/constants";
-import { formatPrice, formatShortDate } from "../lib/format";
+import { formatAmount, formatAvailability, formatShortDate } from "../lib/format";
 import styles from "./ListingCard.module.css";
 
-// Carte d'annonce, réutilisée par l'accueil et les résultats de recherche.
-// compactOnMobile : photo à gauche et texte à droite sous 640 px (liste compacte).
-export default function ListingCard({ listing, compactOnMobile = false }) {
-  const className = [styles.card, compactOnMobile && styles.compactOnMobile].filter(Boolean).join(" ");
+// Carte d'annonce (EF-REC-02) : photo principale, loyer, type et quartier,
+// avance en mois et en FCFA, ancienneté. Réutilisée par l'accueil et la recherche.
+export default function ListingCard({ listing }) {
+  const availability = formatAvailability(listing.availability);
+  const isFree = availability === "Libre";
 
   return (
-    <Link href={`/annonces/${listing.id}`} className={className}>
-      {/* À remplacer par next/image quand le stockage des photos sera choisi. */}
-      <div className={styles.photo} aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-          <circle cx="9" cy="9" r="2" />
-          <path d="m21 15-5-5L5 21" />
-        </svg>
+    <Link href={`/annonces/${listing.id}`} className={styles.card}>
+      <div className={styles.media}>
+        <Image
+          src={listing.photo}
+          alt={listing.photoAlt}
+          fill
+          sizes="(max-width: 640px) 88vw, (max-width: 1040px) 45vw, 380px"
+          placeholder="blur"
+          className={styles.photo}
+        />
+        <span className={styles.price}>
+          <strong className="tabular">{formatAmount(listing.price)}</strong> FCFA/mois
+        </span>
+        <span className={styles.availability} data-soon={!isFree || undefined}>
+          {availability}
+        </span>
       </div>
+
       <div className={styles.body}>
-        <p className={styles.price}>
-          {formatPrice(listing.price)} <span className={styles.perMonth}>/ mois</span>
+        <h3 className={styles.title}>{getPropertyTypeLabel(listing.type)}</h3>
+        <p className={styles.location}>
+          <MapPin size={15} strokeWidth={2.2} aria-hidden="true" />
+          {listing.district}, {getCityLabel(listing.city)}
         </p>
-        <p className="text-body-sm">
-          {getPropertyTypeLabel(listing.type)} · {listing.district}
+        <p className={styles.advance}>
+          Avance {listing.advanceMonths} mois ·{" "}
+          <strong className="tabular">{formatAmount(listing.price * listing.advanceMonths)} FCFA</strong>
         </p>
-        <p className={`text-body-sm ${styles.city}`}>{getCityLabel(listing.city)}</p>
-        <p className="text-caption-sm">
-          Avance {listing.advanceMonths} mois · publiée le {formatShortDate(listing.publishedAt)}
-        </p>
+        <p className={styles.date}>Publiée le {formatShortDate(listing.publishedAt)}</p>
       </div>
     </Link>
   );
