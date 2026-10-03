@@ -37,12 +37,6 @@
   letter-spacing: -0.02em;
 }
 
-.meaning {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-body);
-}
-
 .columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
