@@ -38,7 +38,6 @@ export default function Footer() {
               <LogoMark size={36} />
               {SITE.name}
             </p>
-            <p className={styles.meaning}>«&nbsp;Ndako&nbsp;» veut dire «&nbsp;maison&nbsp;» en lingala.</p>
           </div>
 
           <nav className={styles.columns} aria-label="Liens de pied de page">
