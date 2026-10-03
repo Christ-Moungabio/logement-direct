@@ -28,7 +28,7 @@ export async function updateSession(request) {
 
   // Aucun code entre la création du client et cet appel : sinon la session
   // peut ne pas être rafraîchie et l'utilisateur se retrouve déconnecté.
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
 
-  return response;
+  return { response, claims: data?.claims ?? null };
 }
