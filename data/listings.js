@@ -1,0 +1,114 @@
+// Annonces de démonstration, en attendant Supabase. V1 : Brazzaville seule (voir
+// lib/constants.js) — deux annonces reprennent des photos dont le nom de fichier
+// vient d'un repérage initial sur deux villes ; seuls city/district font foi.
+// Les champs suivent l'entité « Annonce » de la spécification (section 2.5) :
+// à remplacer par une requête sur les annonces au statut « Publiée » (RG-09),
+// triées de la plus récente à la plus ancienne (RG-19).
+// water / electricity : "individual" | "shared" | "none" (EF-ANN-04 ; enum Supabase utility_status).
+// availability : { status: "available" } ou { status: "available_soon", date } (RG-12).
+// Photos : Unsplash (licence Unsplash).
+import studioMoungali from "../public/images/annonce-studio-moungali.jpg";
+import appartementTieTie from "../public/images/annonce-appartement-tie-tie.jpg";
+import maisonBacongo from "../public/images/annonce-maison-bacongo.jpg";
+import chambreTalangai from "../public/images/annonce-chambre-talangai.jpg";
+import appartementPotoPoto from "../public/images/annonce-appartement-poto-poto.jpg";
+import maisonLoandjili from "../public/images/annonce-maison-loandjili.jpg";
+
+export const LISTINGS = [
+  {
+    id: "2",
+    type: "studio",
+    city: "brazzaville",
+    district: "Moungali",
+    price: 75000,
+    advanceMonths: 2,
+    water: "individual",
+    electricity: "individual",
+    doors: 6,
+    availability: { status: "available" },
+    publishedAt: "2026-09-30",
+    updatedAt: "2026-10-01",
+    photo: studioMoungali,
+    photoAlt: "Studio meublé avec lit, coin cuisine et table",
+  },
+  {
+    id: "5",
+    type: "appartement",
+    city: "brazzaville",
+    district: "Ouenzé",
+    price: 180000,
+    advanceMonths: 3,
+    water: "individual",
+    electricity: "individual",
+    doors: null,
+    availability: { status: "available_soon", date: "2026-10-15" },
+    publishedAt: "2026-09-29",
+    updatedAt: "2026-09-29",
+    photo: appartementTieTie,
+    photoAlt: "Séjour clair avec coin cuisine et fauteuil rouge",
+  },
+  {
+    id: "3",
+    type: "maison",
+    city: "brazzaville",
+    district: "Bacongo",
+    price: 250000,
+    advanceMonths: 3,
+    water: "individual",
+    electricity: "individual",
+    doors: 2,
+    availability: { status: "available" },
+    publishedAt: "2026-09-27",
+    updatedAt: "2026-09-30",
+    photo: maisonBacongo,
+    photoAlt: "Maison à étage en brique et crépi blanc, avec balcons",
+  },
+  {
+    id: "4",
+    type: "chambre",
+    city: "brazzaville",
+    district: "Talangaï",
+    price: 35000,
+    advanceMonths: 2,
+    water: "shared",
+    electricity: "shared",
+    doors: 8,
+    availability: { status: "available" },
+    publishedAt: "2026-09-25",
+    updatedAt: "2026-09-25",
+    photo: chambreTalangai,
+    photoAlt: "Chambre avec grand lit, bureau et fenêtre",
+  },
+  {
+    id: "1",
+    type: "appartement",
+    city: "brazzaville",
+    district: "Poto-Poto",
+    price: 150000,
+    advanceMonths: 3,
+    water: "individual",
+    electricity: "shared",
+    doors: 4,
+    availability: { status: "available_soon", date: "2026-11-01" },
+    publishedAt: "2026-09-22",
+    updatedAt: "2026-09-28",
+    photo: appartementPotoPoto,
+    photoAlt: "Petit immeuble clair avec balcons",
+  },
+  {
+    id: "6",
+    type: "maison",
+    city: "brazzaville",
+    district: "Makélékélé",
+    price: 220000,
+    advanceMonths: 3,
+    water: "individual",
+    electricity: "individual",
+    doors: null,
+    availability: { status: "available" },
+    publishedAt: "2026-09-18",
+    updatedAt: "2026-09-26",
+    photo: maisonLoandjili,
+    photoAlt: "Maison à étage entourée de palmiers et d'un jardin",
+  },
+];
