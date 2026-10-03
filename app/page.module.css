@@ -275,6 +275,27 @@ select.searchInput {
 }
 
 
+/* Bandes bleu brume, en alternance avec le fond de page */
+.band {
+  margin-top: var(--space-section);
+  padding-block: 112px;
+  background: var(--color-band);
+}
+.bandInner {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+.band .feature {
+  background: var(--color-canvas);
+}
+.band .faqIcon {
+  background: var(--color-canvas);
+}
+.band .faqItem {
+  border-color: var(--color-band-line);
+}
+
 /* Comment ça marche : bande sombre */
 .howBand {
   margin-top: var(--space-section);
@@ -450,7 +471,7 @@ select.searchInput {
 
 /* Appel final */
 .finalSection {
-  padding-block: var(--space-section) 0;
+  padding-block: var(--space-section);
 }
 .final {
   position: relative;
@@ -574,7 +595,8 @@ select.searchInput {
   .step {
     padding: 24px;
   }
-  .howBand {
+  .howBand,
+  .band {
     padding-block: 80px;
   }
   .howBand .sectionHead {

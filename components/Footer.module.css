@@ -1,5 +1,6 @@
 .footer {
   padding-block: 112px 32px;
+  background: var(--color-band);
 }
 
 .inner {
@@ -77,7 +78,7 @@
   justify-content: space-between;
   gap: 8px 24px;
   padding-top: 24px;
-  border-top: 1px solid var(--color-hairline);
+  border-top: 1px solid var(--color-band-line);
   font-size: 13px;
   font-weight: 600;
   color: var(--color-body);
