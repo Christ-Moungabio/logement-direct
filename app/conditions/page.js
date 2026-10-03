@@ -6,8 +6,6 @@ export const metadata = {
     "Les règles d'utilisation de Ndako : comptes, publication des annonces, signalement, contact des propriétaires et paiements hors plateforme.",
 };
 
-// Texte à faire valider par le PM (ticket #6). Règles reprises du cadrage :
-// RG-01, RG-02, RG-04, RG-05, RG-11, RG-13, RG-14, RG-20, RG-21.
 const SECTIONS = [
   {
     id: "service",
