@@ -35,6 +35,25 @@ create table public.neighborhoods (
     unique (id, city_id)
 );
 
+-- Données de départ : V1 limitée à Brazzaville.
+insert into public.cities (name) values ('Brazzaville');
+
+insert into public.neighborhoods (city_id, name)
+select c.id, n.name
+from public.cities c
+cross join (values
+    ('Makélékélé'),
+    ('Bacongo'),
+    ('Poto-Poto'),
+    ('Moungali'),
+    ('Ouenzé'),
+    ('Talangaï'),
+    ('Mfilou'),
+    ('Madibou'),
+    ('Djiri')
+) as n(name)
+where c.name = 'Brazzaville';
+
 create table public.profiles (
     id uuid primary key references auth.users(id) on delete cascade,
     full_name text not null,
@@ -84,22 +103,33 @@ create trigger profiles_protect_role
 before update on public.profiles
 for each row execute function public.protect_profile_role();
 
+create function public.brazzaville_today()
+returns date
+language sql
+stable
+set search_path = ''
+as $$
+    select (now() at time zone 'Africa/Brazzaville')::date;
+$$;
+
+-- Champs nullables pour les brouillons, obligatoires dès la publication.
 create table public.listings (
     id uuid primary key default gen_random_uuid(),
     owner_id uuid not null references public.profiles(id) on delete restrict,
-    property_type_id smallint not null references public.property_types(id) on delete restrict,
-    city_id uuid not null references public.cities(id) on delete restrict,
-    neighborhood_id uuid not null,
-    monthly_rent integer not null check (monthly_rent > 0),
-    advance_months smallint not null check (advance_months between 1 and 6),
-    description text not null check (length(trim(description)) > 0),
-    water public.utility_status not null,
-    electricity public.utility_status not null,
+    property_type_id smallint references public.property_types(id) on delete restrict,
+    city_id uuid references public.cities(id) on delete restrict,
+    neighborhood_id uuid,
+    monthly_rent integer check (monthly_rent > 0),
+    advance_months smallint check (advance_months between 1 and 6),
+    description text check (length(trim(description)) > 0),
+    water public.utility_status,
+    electricity public.utility_status,
     doors_count smallint check (doors_count is null or doors_count >= 0),
-    availability public.availability_status not null,
+    availability public.availability_status,
     available_from date,
     status public.listing_status not null default 'draft',
     visible_from timestamptz,
+    published_at timestamptz,
     close_reason public.close_reason,
     hidden_reason text,
     created_at timestamptz not null default now(),
@@ -107,11 +137,29 @@ create table public.listings (
     constraint listings_neighborhood_matches_city
         foreign key (neighborhood_id, city_id)
         references public.neighborhoods(id, city_id) on delete restrict,
+    constraint listings_complete_unless_draft
+        check (
+            status = 'draft'
+            or (
+                property_type_id is not null
+                and city_id is not null
+                and neighborhood_id is not null
+                and monthly_rent is not null
+                and advance_months is not null
+                and description is not null
+                and water is not null
+                and electricity is not null
+                and availability is not null
+            )
+        ),
     constraint listings_availability_date
         check (
-            (availability = 'available' and available_from is null)
+            (availability is null and available_from is null)
+            or (availability = 'available' and available_from is null)
             or (availability = 'available_soon' and available_from is not null)
         ),
+    constraint listings_published_at
+        check ((status = 'draft') = (published_at is null)),
     constraint listings_close_reason
         check ((status = 'closed') = (close_reason is not null)),
     constraint listings_hidden_reason
@@ -136,7 +184,8 @@ create table public.listing_photos (
     sort_order smallint not null check (sort_order between 1 and 8),
     is_primary boolean not null default false,
     created_at timestamptz not null default now(),
-    unique (listing_id, sort_order)
+    constraint listing_photos_order
+        unique (listing_id, sort_order) deferrable initially deferred
 );
 
 create unique index listing_one_primary_photo
@@ -180,6 +229,32 @@ create trigger listing_photos_limit
 before insert or update of listing_id on public.listing_photos
 for each row execute function public.limit_listing_photos();
 
+create function public.reassign_primary_photo()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+    if old.is_primary then
+        update public.listing_photos
+        set is_primary = true
+        where id = (
+            select id
+            from public.listing_photos
+            where listing_id = old.listing_id
+            order by sort_order
+            limit 1
+        );
+    end if;
+
+    return null;
+end;
+$$;
+
+create trigger listing_photos_reassign_primary
+after delete on public.listing_photos
+for each row execute function public.reassign_primary_photo();
+
 create function public.guard_listing_changes()
 returns trigger
 language plpgsql
@@ -187,7 +262,8 @@ set search_path = ''
 as $$
 begin
     if new.availability = 'available_soon'
-       and new.available_from <= current_date then
+       and (tg_op = 'INSERT' or new.available_from is distinct from old.available_from)
+       and new.available_from <= public.brazzaville_today() then
         raise exception 'La date de disponibilité doit être dans le futur.';
     end if;
 
@@ -198,7 +274,22 @@ begin
         return new;
     end if;
 
+    new.updated_at := old.updated_at;
+    new.published_at := old.published_at;
+
     if (select auth.uid()) = old.owner_id and not public.is_admin() then
+        if (
+            new.property_type_id, new.city_id, new.neighborhood_id, new.monthly_rent,
+            new.advance_months, new.description, new.water, new.electricity,
+            new.doors_count, new.availability, new.available_from
+        ) is distinct from (
+            old.property_type_id, old.city_id, old.neighborhood_id, old.monthly_rent,
+            old.advance_months, old.description, old.water, old.electricity,
+            old.doors_count, old.availability, old.available_from
+        ) then
+            new.updated_at := now();
+        end if;
+
         if new.owner_id is distinct from old.owner_id then
             raise exception 'Le propriétaire d’une annonce ne peut pas être modifié.';
         end if;
@@ -222,17 +313,34 @@ begin
         end if;
 
         if new.status = 'scheduled' and old.status = 'draft' then
-            if nullif(trim(new.description), '') is null
-               or (new.availability = 'available_soon' and new.available_from <= current_date)
+            if new.property_type_id is null
+               or new.city_id is null
+               or new.neighborhood_id is null
+               or new.monthly_rent is null
+               or new.advance_months is null
+               or nullif(trim(new.description), '') is null
+               or new.water is null
+               or new.electricity is null
+               or new.availability is null
                or not exists (
                    select 1 from public.listing_photos where listing_id = old.id
                ) then
                 raise exception 'Complétez les informations et ajoutez au moins une photo avant de publier.';
             end if;
 
+            if new.availability = 'available_soon'
+               and new.available_from <= public.brazzaville_today() then
+                raise exception 'La date de disponibilité doit être dans le futur.';
+            end if;
+
             new.visible_from := now() + interval '5 minutes';
+            new.published_at := new.visible_from;
         elsif new.visible_from is distinct from old.visible_from then
             raise exception 'La date de mise en ligne ne peut pas être modifiée directement.';
+        end if;
+
+        if old.status = 'scheduled' and new.status = 'draft' then
+            new.published_at := null;
         end if;
 
         if new.status = 'closed' and new.close_reason is null then
@@ -258,13 +366,18 @@ begin
         if new.status is distinct from old.status
            and not (
                (old.status = 'published' and new.status = 'hidden')
+               or (
+                   old.status = 'scheduled'
+                   and new.status = 'hidden'
+                   and old.visible_from <= now()
+               )
                or (old.status = 'hidden' and new.status = 'published')
            ) then
             raise exception 'Ce changement de statut n’est pas autorisé.';
         end if;
 
         if old.status = 'hidden' and new.status = 'published' then
-            new.visible_from := now();
+            new.visible_from := new.published_at;
             new.hidden_reason := null;
         elsif new.status = 'hidden' and old.status <> 'hidden' then
             new.visible_from := null;
@@ -277,7 +390,6 @@ begin
         new.visible_from := null;
     end if;
 
-    new.updated_at := now();
     return new;
 end;
 $$;
@@ -287,13 +399,13 @@ before insert or update on public.listings
 for each row execute function public.guard_listing_changes();
 
 create index listings_public_search
-    on public.listings (city_id, property_type_id, monthly_rent, visible_from desc)
+    on public.listings (city_id, property_type_id, monthly_rent, published_at desc)
     where status in ('scheduled', 'published');
 create index listings_owner_status on public.listings (owner_id, status);
 
 create table public.reports (
     id uuid primary key default gen_random_uuid(),
-    listing_id uuid not null references public.listings(id) on delete cascade,
+    listing_id uuid references public.listings(id) on delete set null,
     reporter_id uuid not null references public.profiles(id) on delete restrict,
     reason public.report_reason not null,
     comment text,
@@ -317,19 +429,17 @@ declare
     updated_count integer;
 begin
     update public.listings
-    set status = 'published',
-        updated_at = now()
+    set availability = 'available',
+        available_from = null
+    where availability = 'available_soon'
+      and available_from <= public.brazzaville_today();
+
+    update public.listings
+    set status = 'published'
     where status = 'scheduled'
       and visible_from <= now();
 
     get diagnostics updated_count = row_count;
-
-    update public.listings
-    set availability = 'available',
-        available_from = null,
-        updated_at = now()
-    where availability = 'available_soon'
-      and available_from <= current_date;
 
     return updated_count;
 end;
@@ -363,10 +473,10 @@ select
     l.doors_count,
     l.availability,
     l.available_from,
-    l.visible_from as published_at,
+    l.published_at,
     l.updated_at
 from public.listings l
-where l.status = 'published'
+where l.status in ('scheduled', 'published')
   and l.visible_from <= now();
 
 create function public.get_listing_contact(p_listing_id uuid)
@@ -394,7 +504,7 @@ begin
     join public.profiles p on p.id = l.owner_id
     where l.id = p_listing_id
       and l.owner_id <> (select auth.uid())
-      and l.status = 'published'
+      and l.status in ('scheduled', 'published')
       and l.visible_from <= now();
 end;
 $$;
@@ -422,6 +532,9 @@ create policy "Les quartiers sont consultables"
 create policy "Les utilisateurs consultent leur profil"
     on public.profiles for select to authenticated
     using (id = (select auth.uid()));
+create policy "Les administrateurs consultent les profils"
+    on public.profiles for select to authenticated
+    using ((select public.is_admin()));
 create policy "Les utilisateurs créent leur profil"
     on public.profiles for insert to authenticated
     with check (
@@ -439,7 +552,7 @@ create policy "Les annonces publiées sont consultables"
     on public.listings for select to anon, authenticated
     using (
         (
-            status = 'published'
+            status in ('scheduled', 'published')
             and visible_from <= now()
         )
         or owner_id = (select auth.uid())
@@ -489,7 +602,7 @@ create policy "Les photos suivent la visibilité de l’annonce"
             where l.id = listing_id
               and (
                   (
-                      l.status = 'published'
+                      l.status in ('scheduled', 'published')
                       and l.visible_from <= now()
                   )
                   or l.owner_id = (select auth.uid())
@@ -531,7 +644,7 @@ create policy "Les locataires signalent une annonce publiée"
             select 1 from public.listings l
             where l.id = listing_id
               and l.owner_id <> (select auth.uid())
-              and l.status = 'published'
+              and l.status in ('scheduled', 'published')
               and l.visible_from <= now()
         )
     );
@@ -547,3 +660,67 @@ grant select, insert, update, delete on public.profiles to authenticated;
 grant select, insert, update, delete on public.listings to authenticated;
 grant select, insert, update, delete on public.listing_photos to authenticated;
 grant select, insert, update on public.reports to authenticated;
+
+-- Bucket public des photos, chemin attendu : <listing_id>/<fichier>.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+    'listing-photos',
+    'listing-photos',
+    true,
+    5242880,
+    array['image/jpeg', 'image/png', 'image/webp']
+)
+on conflict (id) do update
+set public = excluded.public,
+    file_size_limit = excluded.file_size_limit,
+    allowed_mime_types = excluded.allowed_mime_types;
+
+create policy "Les propriétaires ajoutent des photos à leurs annonces"
+    on storage.objects for insert to authenticated
+    with check (
+        bucket_id = 'listing-photos'
+        and exists (
+            select 1 from public.listings l
+            where l.id::text = (storage.foldername(name))[1]
+              and l.owner_id = (select auth.uid())
+              and l.status <> 'hidden'
+        )
+    );
+create policy "Les propriétaires modifient les photos de leurs annonces"
+    on storage.objects for update to authenticated
+    using (
+        bucket_id = 'listing-photos'
+        and exists (
+            select 1 from public.listings l
+            where l.id::text = (storage.foldername(name))[1]
+              and l.owner_id = (select auth.uid())
+              and l.status <> 'hidden'
+        )
+    );
+create policy "Les propriétaires suppriment les photos de leurs annonces"
+    on storage.objects for delete to authenticated
+    using (
+        bucket_id = 'listing-photos'
+        and exists (
+            select 1 from public.listings l
+            where l.id::text = (storage.foldername(name))[1]
+              and l.owner_id = (select auth.uid())
+        )
+    );
+create policy "Les photos suivent la visibilité de l’annonce dans le stockage"
+    on storage.objects for select to anon, authenticated
+    using (
+        bucket_id = 'listing-photos'
+        and exists (
+            select 1 from public.listings l
+            where l.id::text = (storage.foldername(name))[1]
+              and (
+                  (
+                      l.status in ('scheduled', 'published')
+                      and l.visible_from <= now()
+                  )
+                  or l.owner_id = (select auth.uid())
+                  or (select public.is_admin())
+              )
+        )
+    );
