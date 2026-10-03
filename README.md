@@ -20,8 +20,8 @@ Projet réalisé dans le cadre de l'Évaluation 2 (Sprint Produit en Squad) d'Ak
 - Fermeture d'une annonce une fois le bien loué
 
 **Admin**
-- Validation des annonces avant publication
-- Gestion des utilisateurs, des annonces et des catégories
+- Modération des annonces après publication (masquer ou réafficher avec un motif)
+- Gestion des utilisateurs et des catégories
 - Traitement des signalements et arbitrage des avis contestés
 
 La réservation finale et la caution se font en dehors de la plateforme. Les paiements en ligne et les agences sont prévus pour une version ultérieure.
@@ -29,8 +29,12 @@ La réservation finale et la caution se font en dehors de la plateforme. Les pai
 ## Stack technique
 
 - Framework : Next.js
-- Base de données : à renseigner une fois le choix validé par l'équipe
+- Base de données et authentification : Supabase
 - Déploiement : à renseigner
+
+Le schéma initial de la base est dans [`supabase/migrations/20261002090000_schema_initial.sql`](supabase/migrations/20261002090000_schema_initial.sql).
+Une annonce publiée devient visible après 5 minutes, sans validation préalable. Ses modifications sont immédiates.
+Cette première migration couvre les fonctionnalités Must ; les visites, avis et notifications seront ajoutés dans des migrations ultérieures.
 
 ## Prérequis
 
@@ -73,7 +77,7 @@ L'application est disponible sur http://localhost:3000.
 
 - `main` : branche stable, utilisée pour la démonstration. Aucun push direct.
 - `dev` : branche d'intégration. Toutes les fonctionnalités y arrivent par Pull Request.
-- `docs/` : documents du Product Package (SPEC, FRD, User Stories, schéma de base de données).
+- `supabase/migrations/` : migrations de la base de données.
 
 Les règles de travail (branches, commits, Pull Requests) sont décrites dans [CONTRIBUTING.md](CONTRIBUTING.md).
 
