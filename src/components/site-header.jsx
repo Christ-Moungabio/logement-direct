@@ -50,7 +50,13 @@ export async function SiteHeader() {
             <Button asChild variant="ghost" size="sm">
               <Link href="/connexion">Connexion</Link>
             </Button>
-            <Button asChild variant="outline" size="sm">
+            {/* Sous 640 px, l'inscription reste proposée dans le contenu des pages. */}
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="hidden sm:inline-flex"
+            >
               <Link href="/inscription">Créer un compte</Link>
             </Button>
           </nav>

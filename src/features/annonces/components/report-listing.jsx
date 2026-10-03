@@ -1,4 +1,4 @@
-import { Flag, FlagOff } from "lucide-react";
+import { Flag } from "lucide-react";
 import Link from "next/link";
 
 import { loginUrl } from "@/lib/navigation";
@@ -33,16 +33,11 @@ export function ReportListing({
 
   if (relation !== "tenant") return null;
 
-  if (alreadyReported) {
-    return (
-      <p className="inline-flex min-h-11 items-center gap-2 px-3 text-sm text-muted-foreground">
-        <FlagOff className="size-4" aria-hidden="true" />
-        Vous avez signalé cette annonce
-      </p>
-    );
-  }
-
   return (
-    <ReportDialog listingId={listingId} triggerClassName={linkClassName} />
+    <ReportDialog
+      listingId={listingId}
+      alreadyReported={alreadyReported}
+      triggerClassName={linkClassName}
+    />
   );
 }

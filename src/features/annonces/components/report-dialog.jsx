@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleAlert, CircleCheck, Flag } from "lucide-react";
+import { CircleAlert, CircleCheck, Flag, FlagOff } from "lucide-react";
 import { useActionState, useId, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -27,12 +27,24 @@ const INITIAL_STATE = { status: "idle" };
 
 /**
  * Formulaire de signalement, réservé aux locataires connectés.
- * @param {{ listingId: string, triggerClassName?: string }} props
+ * Une fois l'annonce signalée, le bouton laisse place à un texte ; la fenêtre
+ * reste ouverte le temps de lire le message, malgré le rafraîchissement de la page.
+ *
+ * @param {{ listingId: string, alreadyReported: boolean, triggerClassName?: string }} props
  */
-export function ReportDialog({ listingId, triggerClassName }) {
+export function ReportDialog({ listingId, alreadyReported, triggerClassName }) {
   const [open, setOpen] = useState(false);
   // Changer la clé remet le formulaire à zéro à chaque ouverture.
   const [formKey, setFormKey] = useState(0);
+
+  if (alreadyReported && !open) {
+    return (
+      <p className="inline-flex min-h-11 items-center gap-2 px-3 text-sm text-muted-foreground">
+        <FlagOff className="size-4" aria-hidden="true" />
+        Vous avez signalé cette annonce
+      </p>
+    );
+  }
 
   return (
     <Dialog
@@ -90,7 +102,9 @@ function ReportForm({ listingId }) {
   const reasonError = state.fieldErrors?.reason;
   const commentError = state.fieldErrors?.comment;
   const globalError =
-    state.status === "unauthorized" || state.status === "error"
+    state.status === "unauthorized" ||
+    state.status === "error" ||
+    (state.status === "invalid" && !reasonError && !commentError)
       ? state.message
       : null;
 

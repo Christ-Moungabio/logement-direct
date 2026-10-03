@@ -208,12 +208,14 @@ function PhotoViewer({ photos, altFor, index, onIndexChange, title }) {
   const count = photos.length;
   const open = index !== null;
 
+  // Mise à jour fonctionnelle : des appuis rapides ne réutilisent pas un index périmé.
   const go = useCallback(
     (delta) => {
-      if (index === null) return;
-      onIndexChange((index + delta + count) % count);
+      onIndexChange((current) =>
+        current === null ? null : (current + delta + count) % count,
+      );
     },
-    [index, count, onIndexChange],
+    [count, onIndexChange],
   );
 
   useEffect(() => {

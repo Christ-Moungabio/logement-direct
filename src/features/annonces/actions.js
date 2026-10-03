@@ -48,7 +48,9 @@ export async function reportListing(_previousState, formData) {
     const { fieldErrors } = z.flattenError(parsed.error);
     return {
       status: "invalid",
-      message: "Vérifiez le formulaire.",
+      message: fieldErrors.listingId
+        ? "Cette annonce ne peut pas être signalée."
+        : "Vérifiez le formulaire.",
       fieldErrors: {
         reason: fieldErrors.reason?.[0],
         comment: fieldErrors.comment?.[0],

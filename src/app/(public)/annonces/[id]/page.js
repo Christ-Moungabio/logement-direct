@@ -122,32 +122,34 @@ export default async function ListingPage({ params }) {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-14">
-          <div className="flex min-w-0 flex-col gap-8">
+        {/*
+          Mobile : prix, contact, puis détails, dans l'ordre de lecture.
+          Ordinateur : le contact passe dans une colonne à droite.
+          Le bloc contact n'est rendu qu'une fois.
+        */}
+        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:grid-rows-[auto_1fr] lg:gap-x-14">
+          <div className="flex min-w-0 flex-col gap-8 lg:col-start-1 lg:row-start-1">
             <ListingPrice listing={listing} />
             <ListingKeyFacts listing={listing} />
+          </div>
 
-            <div className="flex flex-col gap-4 lg:hidden">
+          <aside
+            aria-label="Contact et informations"
+            className="lg:col-start-2 lg:row-span-2 lg:row-start-1"
+          >
+            <div className="flex flex-col gap-4 lg:sticky lg:top-6">
               <ContactCard {...contactProps} />
               <LegalNotice />
             </div>
+          </aside>
 
+          <div className="flex min-w-0 flex-col gap-8 lg:col-start-1 lg:row-start-2">
             <ListingDescription description={listing.description} />
             <ListingDetails listing={listing} />
             <ListingLocation listing={listing} />
 
             <div className="border-t pt-6 sm:hidden">{reportAction}</div>
           </div>
-
-          <aside
-            aria-label="Contact et informations"
-            className="hidden lg:block"
-          >
-            <div className="sticky top-6 flex flex-col gap-4">
-              <ContactCard {...contactProps} />
-              <LegalNotice />
-            </div>
-          </aside>
         </div>
       </div>
 
