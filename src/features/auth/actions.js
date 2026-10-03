@@ -3,8 +3,8 @@
 import { redirect } from "next/navigation";
 import { createAdminClient } from "../../lib/supabase/admin";
 import { createClient } from "../../lib/supabase/server";
-import { homeForRole } from "./navigation";
-import { fieldErrors, signupSchema } from "./schemas";
+import { homeForRole, safeNextPath } from "./navigation";
+import { fieldErrors, loginSchema, signupSchema } from "./schemas";
 
 const GENERIC_ERROR = "Une erreur est survenue. Réessayez dans un instant.";
 const PHONE_TAKEN = "Ce numéro WhatsApp est déjà utilisé par un autre compte.";
@@ -83,4 +83,40 @@ export async function signUp(_previousState, formData) {
   if (signInError) redirect("/connexion");
 
   redirect(homeForRole(role));
+}
+
+// Un seul message, quel que soit le champ faux (CA-02.2).
+const LOGIN_ERROR = "Adresse e-mail ou mot de passe incorrect.";
+
+export async function signIn(_previousState, formData) {
+  const values = { email: formData.get("email") ?? "" };
+  const next = safeNextPath(formData.get("next"));
+
+  const parsed = loginSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { values, errors: fieldErrors(parsed.error) };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
+  if (error) {
+    if (error.status === 429) {
+      return { values, formError: "Trop de tentatives. Patientez quelques minutes avant de réessayer." };
+    }
+    return { values, formError: LOGIN_ERROR };
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", data.user.id)
+    .maybeSingle();
+
+  // Compte sans profil : il ne peut rien faire sur le site, on ne le garde pas connecté.
+  if (!profile) {
+    await supabase.auth.signOut();
+    return { values, formError: LOGIN_ERROR };
+  }
+
+  redirect(next ?? homeForRole(profile.role));
 }
