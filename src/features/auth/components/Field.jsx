@@ -1,6 +1,5 @@
 import styles from "./AuthForm.module.css";
 
-// Libellé, aide et erreur reliés au champ par aria-describedby.
 export default function Field({ id, label, hint, error, children }) {
   const hintId = hint ? `${id}-aide` : null;
   const errorId = error ? `${id}-erreur` : null;

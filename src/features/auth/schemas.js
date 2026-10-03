@@ -9,8 +9,6 @@ const email = z
   .min(1, "Indiquez votre adresse e-mail.")
   .pipe(z.email("Cette adresse e-mail n'est pas valide."));
 
-// Accepte « 06 968 84 32 », « +242 06 968 84 32 » ou « 00242069688432 » et
-// renvoie le format attendu par la base : +242 suivi de 9 chiffres.
 const whatsappNumber = z
   .string({ error: "Indiquez votre numéro WhatsApp." })
   .transform((value) => value.replace(/[\s.\-()]/g, ""))

@@ -66,7 +66,6 @@
   border-color: var(--color-danger);
 }
 
-/* Numéro WhatsApp : indicatif fixe devant la saisie */
 .phone {
   display: flex;
 }
@@ -88,7 +87,6 @@
   border-color: var(--color-danger);
 }
 
-/* Mot de passe : bouton afficher / masquer dans le champ */
 .password {
   position: relative;
 }
@@ -114,7 +112,6 @@
   color: var(--color-ink);
 }
 
-/* Ville fixe en V1 */
 .static {
   display: flex;
   align-items: center;
@@ -132,7 +129,6 @@
   color: var(--color-body);
 }
 
-/* Choix du profil */
 .roles {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

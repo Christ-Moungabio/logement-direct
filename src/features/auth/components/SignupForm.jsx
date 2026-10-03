@@ -26,7 +26,6 @@ export default function SignupForm({ initialRole }) {
     formRef.current?.querySelector('[aria-invalid="true"]')?.focus();
   }, [state, clientErrors]);
 
-  // Même schéma que le serveur : les erreurs simples s'affichent sans aller-retour.
   function handleSubmit(event) {
     const parsed = signupSchema.safeParse(Object.fromEntries(new FormData(event.currentTarget)));
     if (!parsed.success) {
