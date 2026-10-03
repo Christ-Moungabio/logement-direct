@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:types": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/gen-types.mjs",
+    "db:seed": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/seed.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -20,6 +22,8 @@
   },
   "devDependencies": {
     "eslint": "^9",
-    "eslint-config-next": "16.3.8"
+    "eslint-config-next": "16.3.8",
+    "sharp": "^0.35.5",
+    "supabase": "^2.119.0"
   }
 }
