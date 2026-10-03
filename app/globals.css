@@ -1,39 +1,30 @@
-/* Thème système — Ndako
-   Palette A · Bleu confiance (design system d'origine), grandes photos,
-   cartes blanches arrondies, titres fins et serrés.
-   Ce fichier ne contient QUE les tokens, le reset et quelques utilitaires universels.
-   Le style d'un composant vit dans son propre .module.css et consomme ces variables. */
-
 :root {
-  /* Encre et fonds */
   --color-ink: #0a0a0a;
   --color-charcoal: #525252;
   --color-body: #6b6b6b;
-  --color-mute: #828282; /* grands titres atténués (≥ 3:1) et décor, jamais pour du texte courant */
+  --color-mute: #828282;
 
-  --color-page: #f7f8f3; /* fond des pages : blanc cassé chaud */
-  --color-canvas: #ffffff; /* cartes, champs, panneaux posés sur le fond */
+  --color-page: #f7f8f3;
+  --color-canvas: #ffffff;
   --color-surface-soft: #eef0e9;
-  --color-band: #e8eef9; /* bleu brume : bandes de section qui rythment la page */
-  --color-band-line: rgba(11, 29, 69, 0.12); /* filets posés sur le bleu brume */
-  --color-surface-dark: #0b1d45; /* bleu nuit : bandes sombres et cartes mises en avant */
+  --color-band: #e8eef9;
+  --color-band-line: rgba(11, 29, 69, 0.12);
+  --color-surface-dark: #0b1d45;
   --color-on-dark: #ffffff;
   --color-on-dark-mute: rgba(255, 255, 255, 0.75);
 
   --color-hairline: #e5e5e5;
   --color-hairline-strong: #d4d4d4;
 
-  /* Marque — palette A · Bleu confiance */
   --color-primary: #1d4ed8;
   --color-primary-hover: #1e3a8a;
-  --color-primary-soft: #eef3ff; /* bandeaux, encarts, pastilles */
-  --color-primary-bright: #9bbaff; /* texte et icônes sur le bleu nuit */
+  --color-primary-soft: #eef3ff;
+  --color-primary-bright: #9bbaff;
   --color-on-primary: #ffffff;
 
   --color-link: var(--color-primary);
   --color-focus-ring: rgba(59, 130, 246, 0.5);
 
-  /* États sémantiques — statuts des annonces et des visites */
   --color-success: #1e7b3c;
   --color-success-bg: #e8f5ec;
   --color-warning-bg: #fff4db;
@@ -45,14 +36,12 @@
   --color-neutral-text: #52525b;
   --color-star: #f2a900;
 
-  /* Rayons : pilule pour les commandes, 20 px pour les cartes, 28 px pour les grandes photos */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 20px;
   --radius-xl: 28px;
   --radius-full: 9999px;
 
-  /* Espacements — base 8 px */
   --space-xxs: 2px;
   --space-xs: 4px;
   --space-sm: 8px;
@@ -63,17 +52,14 @@
   --space-3xl: 48px;
   --space-section: 120px;
 
-  /* Élévation : une seule famille d'ombres */
   --shadow-card: 0 1px 2px rgba(18, 23, 18, 0.05), 0 14px 34px -14px rgba(18, 23, 18, 0.2);
   --shadow-float: 0 2px 6px rgba(18, 23, 18, 0.08), 0 24px 48px -16px rgba(18, 23, 18, 0.35);
 
-  /* Mouvement */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-fast: 160ms;
   --dur-base: 280ms;
   --dur-slow: 600ms;
 
-  /* Typographie — --font-nunito est injectée par next/font dans app/layout.js */
   --font-display: var(--font-nunito), ui-rounded, system-ui, sans-serif;
   --font-sans: var(--font-nunito), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
@@ -81,7 +67,6 @@
   accent-color: var(--color-primary);
 }
 
-/* Reset */
 *,
 *::before,
 *::after {
@@ -172,7 +157,6 @@ svg {
   max-width: 100%;
 }
 
-/* Échelle typographique — titres fins et serrés, comme les grandes affiches immobilières */
 .text-display-2xl {
   font-family: var(--font-display);
   font-size: clamp(44px, 6.4vw, 92px);
@@ -232,17 +216,14 @@ svg {
   color: var(--color-body);
 }
 
-/* Passage atténué dans un grand titre : « Trouvez plus vite <span>un logement fiable</span> » */
 .text-muted {
   color: var(--color-mute);
 }
 
-/* Prix et horaires : chiffres alignés */
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Primitives de mise en page */
 .container {
   width: 100%;
   max-width: 1240px;

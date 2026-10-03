@@ -5,8 +5,6 @@ import { getCityLabel, getPropertyTypeLabel } from "../lib/constants";
 import { formatAmount, formatAvailability, formatShortDate } from "../lib/format";
 import styles from "./ListingCard.module.css";
 
-// Carte d'annonce (EF-REC-02) : photo principale, loyer, type et quartier,
-// avance en mois et en FCFA, ancienneté. Réutilisée par l'accueil et la recherche.
 export default function ListingCard({ listing }) {
   const availability = formatAvailability(listing.availability);
   const isFree = availability === "Libre";

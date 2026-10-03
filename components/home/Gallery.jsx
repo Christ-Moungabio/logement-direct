@@ -17,7 +17,6 @@ const PHOTOS = [
   { src: cuisine, label: "Cuisine", alt: "Cuisine équipée avec table et chaises près de la fenêtre" },
 ];
 
-// Fiche de démonstration : mêmes champs que l'entité « Annonce » (CA-05.1 à 05.3).
 const SAMPLE = {
   price: 130000,
   advanceMonths: 3,
@@ -122,7 +121,6 @@ export default function Gallery() {
             Publiée le {formatShortDate(SAMPLE.publishedAt)} · mise à jour le {formatShortDate(SAMPLE.updatedAt)}
           </p>
           <p className={styles.listingNote}>Adresse exacte communiquée par le propriétaire.</p>
-          {/* CA-06.1 : non connecté, invitation à se connecter — le numéro n'est montré nulle part avant. */}
           <Link href="/connexion?role=locataire" className={styles.listingCta}>
             <LogIn size={17} strokeWidth={2.4} aria-hidden="true" />
             Se connecter pour contacter
