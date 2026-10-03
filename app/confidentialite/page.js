@@ -15,9 +15,9 @@ const SECTIONS = [
     paragraphs: ["À l'inscription, Ndako enregistre :"],
     items: [
       "votre nom complet ;",
-      "votre numéro WhatsApp, qui sert aussi d'identifiant de connexion ;",
+      "votre adresse e-mail, qui sert à vous connecter ;",
+      "votre numéro WhatsApp ;",
       "votre ville ;",
-      "votre adresse e-mail, seulement si vous choisissez de la donner ;",
       "votre mot de passe, jamais en clair : nous n'en gardons qu'une empreinte qui ne permet pas de le retrouver ;",
       "votre profil (locataire ou propriétaire) et la date à laquelle vous avez accepté les conditions d'utilisation.",
     ],

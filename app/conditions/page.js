@@ -21,7 +21,7 @@ const SECTIONS = [
     id: "compte",
     title: "Votre compte",
     items: [
-      "Un numéro WhatsApp correspond à un seul compte.",
+      "Vous vous connectez avec votre adresse e-mail et votre mot de passe. Une adresse e-mail et un numéro WhatsApp ne peuvent servir qu'à un seul compte.",
       "À l'inscription, vous choisissez votre profil : vous cherchez un logement (locataire) ou vous en proposez un (propriétaire).",
       "Votre mot de passe compte au moins 8 caractères. Gardez-le pour vous : les actions faites avec votre compte vous sont attribuées.",
       "Les comptes d'administration sont créés par l'équipe Ndako. L'inscription ne permet pas d'en obtenir un.",
