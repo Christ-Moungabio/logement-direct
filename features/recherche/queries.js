@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/src/lib/supabase/server";
 import { PAGE_SIZE } from "./schemas";
 
 // À confirmer avec le lead : la migration ne crée pas le bucket.

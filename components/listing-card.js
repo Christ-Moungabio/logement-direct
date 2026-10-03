@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { capitalize, formatAge, formatFcfa } from "@/lib/format";
+import { capitalize, formatAge, formatPrice } from "@/lib/format";
 import styles from "./listing-card.module.css";
 
 export function ListingCard({ listing }) {
@@ -21,7 +21,7 @@ export function ListingCard({ listing }) {
       </div>
 
       <p className={styles.price}>
-        <strong>{formatFcfa(listing.rent)}</strong>{" "}
+        <strong>{formatPrice(listing.rent)}</strong>{" "}
         <span className={styles.perMonth}>/ mois</span>
       </p>
       <p className={styles.title}>

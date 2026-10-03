@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { capitalize, formatFcfa } from "@/lib/format";
+import { capitalize, formatPrice } from "@/lib/format";
 import { buildSearchHref } from "../url";
 import styles from "../recherche.module.css";
 
@@ -33,10 +33,10 @@ export function ActiveFilters({ filters, options }) {
   if (loyerMin !== undefined || loyerMax !== undefined) {
     const label =
       loyerMin !== undefined && loyerMax !== undefined
-        ? `${formatFcfa(loyerMin)} – ${formatFcfa(loyerMax)}`
+        ? `${formatPrice(loyerMin)} – ${formatPrice(loyerMax)}`
         : loyerMin !== undefined
-          ? `Min ${formatFcfa(loyerMin)}`
-          : `Max ${formatFcfa(loyerMax)}`;
+          ? `Min ${formatPrice(loyerMin)}`
+          : `Max ${formatPrice(loyerMax)}`;
     chips.push({
       label,
       href: without({ loyerMin: undefined, loyerMax: undefined }),
