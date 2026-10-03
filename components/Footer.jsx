@@ -59,7 +59,6 @@ export default function Footer() {
           <p>
             © {new Date().getFullYear()} {SITE.name}. Tous droits réservés.
           </p>
-          <p>Photos&nbsp;: Unsplash, sauf photo d&apos;accueil</p>
         </div>
       </div>
     </footer>
