@@ -44,8 +44,8 @@
   --destructive-soft: #fef2f2;
 
   /* WhatsApp : vert assombri pour garder un contraste AA avec le texte blanc. */
-  --whatsapp: #128c4a;
-  --whatsapp-hover: #0e7a3f;
+  --whatsapp: #0f7a3f;
+  --whatsapp-hover: #0b6533;
 
   --radius: 0.75rem;
 }
