@@ -149,6 +149,7 @@
   padding: 14px 16px;
   border: 1.5px solid var(--color-hairline-strong);
   border-radius: var(--radius-md);
+  background: var(--color-canvas);
   cursor: pointer;
   transition:
     border-color var(--dur-fast) var(--ease-out),
