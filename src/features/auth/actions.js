@@ -3,6 +3,7 @@
 // Connexion minimale, PROVISOIRE : elle permet de tester la fiche annonce en
 // attendant le module AUTH (inscription, règles de mot de passe, session).
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -57,11 +58,14 @@ export async function signIn(_previousState, formData) {
     };
   }
 
+  // L'en-tête (layout) affiche l'utilisateur : il doit être recalculé.
+  revalidatePath("/", "layout");
   redirect(safeRedirectPath(redirectTo));
 }
 
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  revalidatePath("/", "layout");
   redirect("/");
 }
