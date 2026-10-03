@@ -1,6 +1,7 @@
 import { ImageIcon } from "lucide-react";
 import { formatPrice, formatShortDate } from "../../../../lib/format";
 import { CLOSE_REASONS } from "../status";
+import RowActions from "./RowActions";
 import StatusBadge from "./StatusBadge";
 import styles from "./Listings.module.css";
 
@@ -70,6 +71,7 @@ export default function ListingsList({ listings }) {
             <StatusBadge status={listing.status} />
           </div>
           <p className={`${styles.activity} text-body-sm`}>{activity(listing)}</p>
+          <RowActions listing={listing} />
         </li>
       ))}
     </ul>
