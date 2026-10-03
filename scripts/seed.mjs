@@ -60,7 +60,7 @@ export const DEMO_ACCOUNTS = {
   },
   admin: {
     role: "admin",
-    fullName: "Équipe Logement Direct",
+    fullName: "Équipe Ndako",
     whatsappNumber: "+242060000003",
     password: "Demo-Admin-2026",
   },

@@ -61,7 +61,7 @@ export function buildListingPageTitle(listing) {
  */
 export function buildContactMessage(listing, listingUrl) {
   return (
-    `Bonjour, je vous contacte au sujet de votre annonce sur Logement Direct : ` +
+    `Bonjour, je vous contacte au sujet de votre annonce sur Ndako : ` +
     `${buildListingPageTitle(listing)}. ${listingUrl}\n` +
     `Le logement est-il toujours disponible ?`
   );

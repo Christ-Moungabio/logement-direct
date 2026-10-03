@@ -25,7 +25,7 @@ export async function SiteHeader() {
             className="size-8 shrink-0 rounded-full bg-primary"
             aria-hidden="true"
           />
-          <span className="whitespace-nowrap">Logement Direct</span>
+          <span className="whitespace-nowrap">Ndako</span>
         </Link>
 
         {user ? (

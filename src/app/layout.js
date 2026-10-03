@@ -10,8 +10,8 @@ const nunitoSans = Nunito_Sans({
 
 export const metadata = {
   title: {
-    default: "Logement Direct · Logements à louer à Brazzaville",
-    template: "%s · Logement Direct",
+    default: "Ndako · Logements à louer à Brazzaville",
+    template: "%s · Ndako",
   },
   description:
     "Trouvez un logement à louer à Brazzaville et contactez directement le propriétaire, sans intermédiaire payant.",
