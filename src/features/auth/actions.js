@@ -1,10 +1,13 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createAdminClient } from "../../lib/supabase/admin";
 import { createClient } from "../../lib/supabase/server";
 import { homeForRole, safeNextPath } from "./navigation";
 import { fieldErrors, loginSchema, signupSchema } from "./schemas";
+import { ACTIVITY_COOKIE } from "./session";
 
 const GENERIC_ERROR = "Une erreur est survenue. Réessayez dans un instant.";
 const PHONE_TAKEN = "Ce numéro WhatsApp est déjà utilisé par un autre compte.";
@@ -110,9 +113,17 @@ export async function signIn(_previousState, formData) {
     .maybeSingle();
 
   if (!profile) {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: "local" });
     return { values, formError: LOGIN_ERROR };
   }
 
   redirect(next ?? homeForRole(profile.role));
+}
+
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut({ scope: "local" });
+  (await cookies()).delete(ACTIVITY_COOKIE);
+  revalidatePath("/", "layout");
+  redirect("/");
 }
