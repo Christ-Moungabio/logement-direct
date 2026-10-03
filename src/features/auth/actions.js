@@ -83,7 +83,6 @@ export async function signUp(_previousState, formData) {
   redirect(homeForRole(role));
 }
 
-// Un seul message, quel que soit le champ faux (CA-02.2).
 const LOGIN_ERROR = "Adresse e-mail ou mot de passe incorrect.";
 
 export async function signIn(_previousState, formData) {
@@ -110,7 +109,6 @@ export async function signIn(_previousState, formData) {
     .eq("id", data.user.id)
     .maybeSingle();
 
-  // Compte sans profil : il ne peut rien faire sur le site, on ne le garde pas connecté.
   if (!profile) {
     await supabase.auth.signOut();
     return { values, formError: LOGIN_ERROR };
