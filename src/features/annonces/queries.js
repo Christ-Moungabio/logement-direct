@@ -49,6 +49,41 @@ export const getPublicListing = cache(async (id) => {
 });
 
 /**
+ * Annonces en ligne les plus récentes, pour l'accueil PROVISOIRE (en attendant
+ * la page de résultats du module REC).
+ *
+ * @param {number} [limit]
+ * @returns {Promise<{ id: string, title: string, city: string, monthlyRent: number }[]>}
+ */
+export async function listRecentPublicListings(limit = 12) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("public_listings")
+    .select(
+      `id, monthly_rent,
+       property_type:property_types ( name ),
+       city:cities!listings_city_id_fkey ( name ),
+       neighborhood:neighborhoods!listings_neighborhood_matches_city ( name )`,
+    )
+    .order("published_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("Lecture des annonces impossible", error.code, error.message);
+    return [];
+  }
+
+  return data
+    .filter((row) => row.property_type && row.city && row.neighborhood)
+    .map((row) => ({
+      id: row.id,
+      title: `${propertyTypeLabel(row.property_type.name)} à ${row.neighborhood.name}`,
+      city: row.city.name,
+      monthlyRent: row.monthly_rent,
+    }));
+}
+
+/**
  * Relation de l'utilisateur courant avec l'annonce, calculée côté serveur.
  *
  * @param {string} id
