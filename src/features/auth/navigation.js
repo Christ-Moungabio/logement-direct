@@ -14,6 +14,18 @@ export function homeForRole(role) {
   return HOME_BY_ROLE[role] ?? "/";
 }
 
+const SPACE_LABELS = {
+  owner: "Mes annonces",
+  tenant: "Rechercher",
+  admin: "Administration",
+};
+
+export function spaceLinkForRole(role) {
+  const href = homeForRole(role);
+  if (href === "/") return null;
+  return { href, label: SPACE_LABELS[role] };
+}
+
 const PROTECTED_PREFIXES = ["/mes-annonces", "/admin"];
 
 export function isProtectedPath(pathname) {

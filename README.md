@@ -42,6 +42,8 @@ Cette première migration couvre les fonctionnalités Must ; les visites, avis e
 - Le **numéro WhatsApp reste obligatoire** à l'inscription. Il est enregistré dans `profiles.whatsapp_number` (format `+242` suivi de 9 chiffres, un numéro par compte) et sert au contact avec les propriétaires.
 - Aucune confirmation par e-mail : le compte est créé côté serveur, déjà confirmé, et l'utilisateur est connecté tout de suite.
 - `proxy.js` rafraîchit la session à chaque requête (`src/lib/supabase/proxy.js`).
+- La session expire après **7 jours sans activité** : le cookie `ndako_last_seen` garde la date de la dernière visite, et au-delà de ce délai la session est fermée et l'utilisateur doit se reconnecter. La durée se règle dans `src/features/auth/session.js` (`SESSION_IDLE_DAYS`). L'option équivalente de Supabase (« Inactivity timeout ») est réservée aux offres payantes.
+- La déconnexion ferme la session côté Supabase, supprime les cookies et renvoie vers l'accueil.
 - Les trois clients Supabase sont dans `src/lib/supabase/` : `server.js` (Server Components et Server Actions), `client.js` (navigateur), `admin.js` (serveur uniquement, clé secrète, contourne la RLS).
 
 ## Prérequis
