@@ -187,27 +187,29 @@ export default function HomePage() {
         </section>
 
         {/* Fonctionnalités */}
-        <section id="fonctionnalites" className={`container ${styles.section}`} aria-labelledby="fonctionnalites-title">
-          <div className={styles.sectionHead}>
-            <h2 id="fonctionnalites-title" className="text-display-xl">
-              Les bons repères pour louer au Congo
-            </h2>
-            <p className={styles.sectionAside}>
-              Les informations utiles pour comparer les logements et réserver une visite, sans perdre de temps ni
-              d&apos;argent en déplacements.
-            </p>
+        <section id="fonctionnalites" className={styles.band} aria-labelledby="fonctionnalites-title">
+          <div className={`container ${styles.bandInner}`}>
+            <div className={styles.sectionHead}>
+              <h2 id="fonctionnalites-title" className="text-display-xl">
+                Les bons repères pour louer au Congo
+              </h2>
+              <p className={styles.sectionAside}>
+                Les informations utiles pour comparer les logements et réserver une visite, sans perdre de temps ni
+                d&apos;argent en déplacements.
+              </p>
+            </div>
+            <ul className={styles.features}>
+              {FEATURES.map(({ Icon, title, text }) => (
+                <li key={title} className={styles.feature}>
+                  <span className={styles.featureIcon}>
+                    <Icon size={22} strokeWidth={2.2} aria-hidden="true" />
+                  </span>
+                  <h3 className="text-heading-md">{title}</h3>
+                  <p className={styles.featureText}>{text}</p>
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul className={styles.features}>
-            {FEATURES.map(({ Icon, title, text }) => (
-              <li key={title} className={styles.feature}>
-                <span className={styles.featureIcon}>
-                  <Icon size={22} strokeWidth={2.2} aria-hidden="true" />
-                </span>
-                <h3 className="text-heading-md">{title}</h3>
-                <p className={styles.featureText}>{text}</p>
-              </li>
-            ))}
-          </ul>
         </section>
 
         {/* Galerie : une fiche d'annonce */}
@@ -291,8 +293,8 @@ export default function HomePage() {
         </section>
 
         {/* Questions fréquentes */}
-        <section id="faq" className={`container ${styles.section}`} aria-labelledby="faq-title">
-          <div className={styles.faq}>
+        <section id="faq" className={styles.band} aria-labelledby="faq-title">
+          <div className={`container ${styles.faq}`}>
             <div className={styles.faqHead}>
               <h2 id="faq-title" className="text-display-xl">
                 Questions fréquentes
