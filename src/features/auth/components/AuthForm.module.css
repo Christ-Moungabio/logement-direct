@@ -1,0 +1,229 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.alert {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-ink);
+}
+
+.hint {
+  font-size: 13.5px;
+  font-weight: 550;
+  line-height: 1.4;
+  color: var(--color-body);
+}
+
+.error {
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-danger);
+}
+
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-canvas);
+  font-size: 16px;
+  font-weight: 600;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+.input::placeholder {
+  color: var(--color-mute);
+  font-weight: 500;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+.input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+/* Numéro WhatsApp : indicatif fixe devant la saisie */
+.phone {
+  display: flex;
+}
+.prefix {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--color-hairline-strong);
+  border-right: 0;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  background: var(--color-surface-soft);
+  font-weight: 800;
+  color: var(--color-charcoal);
+}
+.phone .input {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.phone:has(.input[aria-invalid="true"]) .prefix {
+  border-color: var(--color-danger);
+}
+
+/* Mot de passe : bouton afficher / masquer dans le champ */
+.password {
+  position: relative;
+}
+.password .input {
+  padding-right: 52px;
+}
+.reveal {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-charcoal);
+}
+.reveal:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+/* Ville fixe en V1 */
+.static {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-soft);
+  font-weight: 700;
+}
+.static span {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-body);
+}
+
+/* Choix du profil */
+.roles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.legend {
+  margin-bottom: 8px;
+}
+.role {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+.role:hover {
+  border-color: var(--color-mute);
+}
+.role:has(input:checked) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+.role:has(input:focus-visible) {
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+.role input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.roleTitle {
+  font-size: 15.5px;
+  font-weight: 800;
+}
+.roleText {
+  font-size: 13.5px;
+  font-weight: 550;
+  line-height: 1.4;
+  color: var(--color-body);
+}
+.rolesInvalid .role {
+  border-color: var(--color-danger);
+}
+.groupError {
+  margin-top: 6px;
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+  cursor: pointer;
+}
+.check input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 1px 0 0;
+}
+.check a,
+.switch a {
+  color: var(--color-primary);
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.submit {
+  height: 52px;
+  font-size: 16px;
+}
+
+.switch {
+  padding-top: 20px;
+  border-top: 1px solid var(--color-hairline);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  text-align: center;
+}
+
+@media (max-width: 420px) {
+  .roles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
