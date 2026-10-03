@@ -1,71 +1,118 @@
 "use server";
 
-// Connexion minimale, PROVISOIRE : elle permet de tester la fiche annonce en
-// attendant le module AUTH (inscription, règles de mot de passe, session).
-
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
+import { createAdminClient } from "../../lib/supabase/admin";
+import { createClient } from "../../lib/supabase/server";
+import { homeForRole, safeNextPath } from "./navigation";
+import { fieldErrors, loginSchema, signupSchema } from "./schemas";
 
-import { whatsappToAuthEmail } from "@/lib/auth-identity";
-import { safeRedirectPath } from "@/lib/navigation";
-import { normalizeWhatsappNumber } from "@/lib/phone";
-import { createClient } from "@/lib/supabase/server";
+const GENERIC_ERROR = "Une erreur est survenue. Réessayez dans un instant.";
+const PHONE_TAKEN = "Ce numéro WhatsApp est déjà utilisé par un autre compte.";
+const EMAIL_TAKEN = "Cette adresse e-mail est déjà utilisée par un autre compte.";
 
-const signInSchema = z.object({
-  whatsappNumber: z
-    .string()
-    .transform((value) => normalizeWhatsappNumber(value))
-    .refine((value) => value !== null, {
-      message:
-        "Saisissez un numéro WhatsApp du Congo, par exemple 06 123 45 67.",
-    }),
-  password: z.string().min(1, "Saisissez votre mot de passe."),
-  redirectTo: z.string().optional(),
-});
+const DEFAULT_CITY = "Brazzaville";
 
-/**
- * @typedef {{ status: "idle" | "error", message?: string }} SignInState
- */
-
-/**
- * @param {SignInState} _previousState
- * @param {FormData} formData
- * @returns {Promise<SignInState>}
- */
-export async function signIn(_previousState, formData) {
-  const parsed = signInSchema.safeParse({
+function signupValues(formData) {
+  return {
+    role: formData.get("role") ?? "",
+    fullName: formData.get("fullName") ?? "",
+    email: formData.get("email") ?? "",
     whatsappNumber: formData.get("whatsappNumber") ?? "",
-    password: formData.get("password") ?? "",
-    redirectTo: formData.get("redirectTo") ?? undefined,
-  });
-
-  if (!parsed.success) {
-    return { status: "error", message: parsed.error.issues[0].message };
-  }
-
-  const { whatsappNumber, password, redirectTo } = parsed.data;
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
-    email: whatsappToAuthEmail(whatsappNumber),
-    password,
-  });
-
-  if (error) {
-    return {
-      status: "error",
-      message: "Numéro WhatsApp ou mot de passe incorrect.",
-    };
-  }
-
-  // L'en-tête (layout) affiche l'utilisateur : il doit être recalculé.
-  revalidatePath("/", "layout");
-  redirect(safeRedirectPath(redirectTo));
+    terms: formData.get("terms") === "on",
+  };
 }
 
-export async function signOut() {
+export async function signUp(_previousState, formData) {
+  const values = signupValues(formData);
+  const parsed = signupSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { values, errors: fieldErrors(parsed.error) };
+  }
+
+  const { role, fullName, email, whatsappNumber, password } = parsed.data;
+  const admin = createAdminClient();
+
+  const { data: existing, error: lookupError } = await admin
+    .from("profiles")
+    .select("id")
+    .eq("whatsapp_number", whatsappNumber)
+    .maybeSingle();
+  if (lookupError) return { values, formError: GENERIC_ERROR };
+  if (existing) return { values, errors: { whatsappNumber: [PHONE_TAKEN] } };
+
+  const { data: city } = await admin
+    .from("cities")
+    .select("id")
+    .eq("name", DEFAULT_CITY)
+    .maybeSingle();
+
+  const { data: created, error: createError } = await admin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: { full_name: fullName },
+  });
+  if (createError) {
+    if (createError.code === "email_exists") return { values, errors: { email: [EMAIL_TAKEN] } };
+    if (createError.code === "weak_password") {
+      return { values, errors: { password: ["Ce mot de passe est trop simple, choisissez-en un autre."] } };
+    }
+    return { values, formError: GENERIC_ERROR };
+  }
+
+  const userId = created.user.id;
+  const { error: profileError } = await admin.from("profiles").insert({
+    id: userId,
+    full_name: fullName,
+    whatsapp_number: whatsappNumber,
+    email,
+    city_id: city?.id ?? null,
+    role,
+    terms_accepted_at: new Date().toISOString(),
+  });
+  if (profileError) {
+    await admin.auth.admin.deleteUser(userId);
+    if (profileError.code === "23505") return { values, errors: { whatsappNumber: [PHONE_TAKEN] } };
+    return { values, formError: GENERIC_ERROR };
+  }
+
   const supabase = await createClient();
-  await supabase.auth.signOut();
-  revalidatePath("/", "layout");
-  redirect("/");
+  const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+  if (signInError) redirect("/connexion");
+
+  redirect(homeForRole(role));
+}
+
+const LOGIN_ERROR = "Adresse e-mail ou mot de passe incorrect.";
+
+export async function signIn(_previousState, formData) {
+  const values = { email: formData.get("email") ?? "" };
+  const next = safeNextPath(formData.get("next"));
+
+  const parsed = loginSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { values, errors: fieldErrors(parsed.error) };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
+  if (error) {
+    if (error.status === 429) {
+      return { values, formError: "Trop de tentatives. Patientez quelques minutes avant de réessayer." };
+    }
+    return { values, formError: LOGIN_ERROR };
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", data.user.id)
+    .maybeSingle();
+
+  if (!profile) {
+    await supabase.auth.signOut();
+    return { values, formError: LOGIN_ERROR };
+  }
+
+  redirect(next ?? homeForRole(profile.role));
 }

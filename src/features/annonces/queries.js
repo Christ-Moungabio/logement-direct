@@ -1,18 +1,15 @@
 import "server-only";
 
 import { cache } from "react";
-
-import { createClient } from "@/lib/supabase/server";
-import { getCurrentUser } from "@/server/auth";
-
+import { createClient } from "../../lib/supabase/server";
+import { getCurrentProfile } from "../auth/queries";
 import { propertyTypeLabel } from "./labels";
 import { listingIdSchema } from "./schemas";
 
 export const LISTING_PHOTOS_BUCKET = "listing-photos";
 
-// Une seule requête : la vue expose les clés étrangères de `listings`, ce qui
-// permet à PostgREST de joindre les libellés et les photos. Les photos suivent
-// leur propre politique RLS (visibilité de l'annonce).
+// La vue expose les clés étrangères de `listings` : PostgREST joint les
+// libellés et les photos en une seule requête. Les photos suivent leur propre RLS.
 const LISTING_SELECT = `
   id,
   owner_id,
@@ -32,132 +29,6 @@ const LISTING_SELECT = `
   photos:listing_photos ( storage_path, sort_order, is_primary )
 `;
 
-/**
- * Lit une annonce visible (vue `public_listings`) avec la session de l'utilisateur.
- * Renvoie `null` si l'identifiant est invalide ou si l'annonce n'est pas visible
- * (inexistante, brouillon, en cours de mise en ligne, fermée ou masquée).
- *
- * L'identifiant du propriétaire n'est pas dans le résultat : utiliser
- * `getViewerRelation` pour savoir si l'utilisateur consulte sa propre annonce.
- *
- * @param {string} id
- * @returns {Promise<import("./types").ListingDetail | null>}
- */
-export const getPublicListing = cache(async (id) => {
-  const row = await fetchListingRow(id);
-  return row ? toListingDetail(row.data, row.supabase) : null;
-});
-
-/**
- * Annonces en ligne les plus récentes, pour l'accueil PROVISOIRE (en attendant
- * la page de résultats du module REC).
- *
- * @param {number} [limit]
- * @returns {Promise<{ id: string, title: string, city: string, monthlyRent: number }[]>}
- */
-export async function listRecentPublicListings(limit = 12) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("public_listings")
-    .select(
-      `id, monthly_rent,
-       property_type:property_types ( name ),
-       city:cities!listings_city_id_fkey ( name ),
-       neighborhood:neighborhoods!listings_neighborhood_matches_city ( name )`,
-    )
-    .order("published_at", { ascending: false })
-    .limit(limit);
-
-  if (error) {
-    console.error("Lecture des annonces impossible", error.code, error.message);
-    return [];
-  }
-
-  return data
-    .filter((row) => row.property_type && row.city && row.neighborhood)
-    .map((row) => ({
-      id: row.id,
-      title: `${propertyTypeLabel(row.property_type.name)} à ${row.neighborhood.name}`,
-      city: row.city.name,
-      monthlyRent: row.monthly_rent,
-    }));
-}
-
-/**
- * Relation de l'utilisateur courant avec l'annonce, calculée côté serveur.
- *
- * @param {string} id
- * @returns {Promise<import("./types").ViewerRelation>}
- */
-export async function getViewerRelation(id) {
-  const [user, row] = await Promise.all([
-    getCurrentUser(),
-    fetchListingRow(id),
-  ]);
-
-  if (!user) return "guest";
-  if (row && row.data.owner_id === user.id) return "owner";
-  if (user.role === "tenant") return "tenant";
-  return "other";
-}
-
-/**
- * Coordonnées du propriétaire via la RPC `get_listing_contact`.
- * À n'appeler que pour un utilisateur connecté : la RPC refuse les visiteurs.
- * Renvoie `null` pour le propriétaire de l'annonce ou en cas d'erreur.
- *
- * @param {string} id
- * @returns {Promise<import("./types").ListingContact | null>}
- */
-export async function getListingContact(id) {
-  const supabase = await createClient();
-  const { data, error } = await supabase.rpc("get_listing_contact", {
-    p_listing_id: id,
-  });
-
-  if (error) {
-    console.error("get_listing_contact a échoué", error.code, error.message);
-    return null;
-  }
-
-  const contact = data?.[0];
-  if (!contact) return null;
-
-  return {
-    ownerName: contact.owner_name,
-    whatsappNumber: contact.whatsapp_number,
-  };
-}
-
-/**
- * Indique si l'utilisateur courant a déjà signalé l'annonce.
- *
- * @param {string} listingId
- * @param {string} userId
- * @returns {Promise<boolean>}
- */
-export async function hasReportedListing(listingId, userId) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("reports")
-    .select("id")
-    .eq("listing_id", listingId)
-    .eq("reporter_id", userId)
-    .maybeSingle();
-
-  if (error) {
-    console.error(
-      "Lecture du signalement impossible",
-      error.code,
-      error.message,
-    );
-    return false;
-  }
-  return data !== null;
-}
-
-// Mis en cache pour la requête : la page, ses métadonnées et le calcul de la
-// relation partagent le même appel réseau.
 const fetchListingRow = cache(async (id) => {
   if (!listingIdSchema.safeParse(id).success) return null;
 
@@ -170,7 +41,6 @@ const fetchListingRow = cache(async (id) => {
     .maybeSingle();
 
   if (error) {
-    // Une erreur technique ne doit rien révéler : on affiche « indisponible ».
     console.error("Lecture de l'annonce impossible", error.code, error.message);
     return null;
   }
@@ -179,33 +49,74 @@ const fetchListingRow = cache(async (id) => {
 });
 
 /**
- * @param {any} row Ligne de `public_listings` avec ses jointures.
- * @param {import("@supabase/supabase-js").SupabaseClient} supabase
- * @returns {import("./types").ListingDetail | null}
+ * Annonce visible (vue `public_listings`), lue avec la session de l'utilisateur.
+ * `null` si l'identifiant est invalide ou si l'annonce n'est pas visible.
+ * L'identifiant du propriétaire n'est pas renvoyé : voir `getViewerRelation`.
+ *
+ * @returns {Promise<import("./types").ListingDetail | null>}
  */
+export const getPublicListing = cache(async (id) => {
+  const row = await fetchListingRow(id);
+  return row ? toListingDetail(row.data, row.supabase) : null;
+});
+
+/** @returns {Promise<import("./types").ViewerRelation>} */
+export async function getViewerRelation(id) {
+  const [profile, row] = await Promise.all([getCurrentProfile(), fetchListingRow(id)]);
+
+  if (!profile) return "guest";
+  if (row && row.data.owner_id === profile.id) return "owner";
+  if (profile.role === "tenant") return "tenant";
+  return "other";
+}
+
+/**
+ * Coordonnées du propriétaire (RPC `get_listing_contact`), à n'appeler que pour
+ * un utilisateur connecté. `null` pour le propriétaire de l'annonce ou en cas d'erreur.
+ *
+ * @returns {Promise<import("./types").ListingContact | null>}
+ */
+export async function getListingContact(id) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_listing_contact", { p_listing_id: id });
+
+  if (error) {
+    console.error("get_listing_contact a échoué", error.code, error.message);
+    return null;
+  }
+
+  const contact = data?.[0];
+  if (!contact) return null;
+
+  return { ownerName: contact.owner_name, whatsappNumber: contact.whatsapp_number };
+}
+
+export async function hasReportedListing(listingId, userId) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("reports")
+    .select("id")
+    .eq("listing_id", listingId)
+    .eq("reporter_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Lecture du signalement impossible", error.code, error.message);
+    return false;
+  }
+  return data !== null;
+}
+
 function toListingDetail(row, supabase) {
-  // Une annonce visible est forcément complète (contrainte de la base) ;
-  // on reste prudent si une jointure revient vide.
-  if (
-    !row.property_type ||
-    !row.city ||
-    !row.neighborhood ||
-    row.monthly_rent == null ||
-    row.advance_months == null
-  ) {
+  // Une annonce visible est complète (contrainte de la base) ; prudence si une jointure revient vide.
+  if (!row.property_type || !row.city || !row.neighborhood || row.monthly_rent == null || row.advance_months == null) {
     return null;
   }
 
   const photos = [...(row.photos ?? [])]
-    .sort(
-      (a, b) =>
-        Number(b.is_primary) - Number(a.is_primary) ||
-        a.sort_order - b.sort_order,
-    )
+    .sort((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order)
     .map((photo) => ({
-      url: supabase.storage
-        .from(LISTING_PHOTOS_BUCKET)
-        .getPublicUrl(photo.storage_path).data.publicUrl,
+      url: supabase.storage.from(LISTING_PHOTOS_BUCKET).getPublicUrl(photo.storage_path).data.publicUrl,
       isPrimary: photo.is_primary,
       sortOrder: photo.sort_order,
     }));

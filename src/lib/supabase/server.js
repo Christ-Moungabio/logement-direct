@@ -1,11 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-/**
- * Client Supabase côté serveur, avec la session de l'utilisateur (RLS appliquée).
- *
- * @returns {Promise<import("@supabase/supabase-js").SupabaseClient<import("./database.types").Database>>}
- */
 export async function createClient() {
   const cookieStore = await cookies();
 

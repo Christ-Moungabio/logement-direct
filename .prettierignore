@@ -1,5 +1,0 @@
-.next
-node_modules
-package-lock.json
-supabase/migrations
-src/lib/supabase/database.types.ts

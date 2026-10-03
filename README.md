@@ -46,7 +46,7 @@ Les priorités suivent la méthode MoSCoW : **Must** (indispensable au MVP), **S
 | Recherche depuis l'accueil par ville, type de bien et budget, sans connexion | Must | À faire |
 | Filtres par quartiers, types de bien et loyer ; tri par date ou par prix ; pagination | Must | À faire |
 | Fiche annonce : photos, loyer, avance, eau, électricité, nombre de portes, disponibilité, date de mise à jour | Must | Fait, en revue |
-| Inscription et connexion par numéro WhatsApp et mot de passe | Must | En cours : connexion provisoire, inscription à faire |
+| Inscription et connexion par e-mail et mot de passe (numéro WhatsApp obligatoire) | Must | Fait |
 | Contact du propriétaire par WhatsApp ou appel, réservé aux utilisateurs connectés | Must | Fait, en revue |
 | Signalement d'une annonce avec un motif | Must | Fait, en revue |
 | Demande de visite sur un créneau disponible, suivi dans « Mes visites » | Should | À faire |
@@ -86,13 +86,13 @@ Agences et démarcheurs, paiement en ligne et Mobile Money, réservation finale 
 
 ## Comptes de démonstration
 
-Ces comptes sont créés par le script de seed (voir [Base de données](#base-de-données)). On se connecte sur `/connexion` avec le numéro WhatsApp et le mot de passe.
+Ces comptes sont créés par le script de seed (voir [Base de données](#base-de-données)). On se connecte sur `/connexion` avec l'adresse e-mail et le mot de passe.
 
-| Rôle | Numéro WhatsApp | Mot de passe |
-|---|---|---|
-| Locataire | 06 000 00 01 (+242060000001) | `Demo-Locataire-2026` |
-| Propriétaire | 06 000 00 02 (+242060000002) | `Demo-Proprio-2026` |
-| Administrateur | 06 000 00 03 (+242060000003) | `Demo-Admin-2026` |
+| Rôle | E-mail | Mot de passe | Numéro WhatsApp |
+|---|---|---|---|
+| Locataire | `locataire@ndako.cg` | `Demo-Locataire-2026` | +242 06 000 00 01 |
+| Propriétaire | `proprietaire@ndako.cg` | `Demo-Proprio-2026` | +242 06 000 00 02 |
+| Administrateur | `admin@ndako.cg` | `Demo-Admin-2026` | +242 06 000 00 03 |
 
 Le compte administrateur ne peut pas être créé depuis l'inscription publique.
 
@@ -104,16 +104,15 @@ Le seed crée aussi sept annonces du propriétaire de démonstration, qui couvre
 
 | Domaine | Technologie |
 |---|---|
-| Framework (frontend et backend) | Next.js 16 (App Router), JavaScript (types via JSDoc) |
+| Framework (frontend et backend) | Next.js 16 (App Router), JavaScript |
 | Base de données | PostgreSQL hébergé sur Supabase, sécurisé par la Row Level Security (RLS) |
-| Accès aux données | `@supabase/ssr` et `@supabase/supabase-js`, côté serveur uniquement |
-| Authentification | Supabase Auth (numéro WhatsApp et mot de passe) |
+| Accès aux données | `@supabase/ssr` et `@supabase/supabase-js`, côté serveur |
+| Authentification | Supabase Auth (e-mail et mot de passe) |
 | Stockage des photos | Supabase Storage (bucket public `listing-photos`) |
 | Tâches planifiées | `pg_cron` (mise en ligne après 5 minutes, passage à « Libre ») |
 | Validation des données | Zod |
-| Interface | Tailwind CSS 4, shadcn/ui, icônes Lucide |
-| Tests | Vitest |
-| Qualité du code | ESLint, Prettier |
+| Interface | CSS Modules, design system dans `app/globals.css`, icônes Lucide |
+| Qualité du code | ESLint |
 | Déploiement | Vercel (prévu) |
 
 ---
@@ -123,39 +122,43 @@ Le seed crée aussi sept annonces du propriétaire de démonstration, qui couvre
 L'application est un projet Next.js **fullstack** : il n'y a pas de backend séparé. Les pages sont des Server Components qui lisent les données, et les modifications passent par des Server Actions. Toutes les requêtes passent par un client Supabase créé **côté serveur avec la session de l'utilisateur** : la sécurité repose sur les politiques RLS et les fonctions SQL de la base, qui s'appuient sur `auth.uid()`. Le navigateur n'appelle jamais Supabase directement.
 
 ```
+app/                      # Routage (pages, layouts) et design system (globals.css)
+├── (auth)/               # Connexion, inscription
+├── annonces/[id]/        # Fiche annonce
+└── conditions/, confidentialite/
+components/               # Header, Footer, ListingCard, ui/Button…
+lib/                      # constants.js, format.js (FCFA, dates), whatsapp.js
+proxy.js                  # Session Supabase et routes protégées
 src/
-├── app/                  # Routage uniquement (pages et layouts)
-│   └── (public)/         # Accueil provisoire, fiche annonce, connexion provisoire
 ├── features/             # Une fonctionnalité = un dossier
 │   ├── annonces/         # Fiche annonce (module FIC)
-│   └── auth/             # Connexion provisoire
-├── server/
-│   ├── auth.js           # getCurrentUser() : utilisateur connecté et rôle
-│   └── site-url.js       # URL publique du site
-├── components/
-│   ├── ui/               # Composants shadcn/ui
-│   └── site-header.jsx, site-footer.jsx
-├── lib/
-│   ├── supabase/         # Clients Supabase et types générés
-│   └── format.js, phone.js, navigation.js…  # FCFA, dates, liens WhatsApp
-└── proxy.js              # Rafraîchissement de la session Supabase
+│   └── auth/             # Inscription, connexion, getCurrentProfile, requireUser
+└── lib/supabase/         # Clients Supabase et types générés
 supabase/migrations/      # Schéma de la base (SQL)
 scripts/                  # Seed et génération des types
 ```
 
-Les autres modules (recherche, propriétaire, locataire, administration) viendront s'ajouter dans `app/` et `features/` selon la même organisation.
+Les autres modules (recherche, propriétaire, locataire, administration) viendront s'ajouter dans `app/` et `src/features/` selon la même organisation.
 
-Chaque dossier de `features/` contient ses requêtes de lecture (`queries.js`), ses Server Actions (`actions.js`), ses schémas de validation (`schemas.js`) et ses composants.
+Chaque dossier de `src/features/` contient ses requêtes de lecture (`queries.js`), ses Server Actions (`actions.js`), ses schémas de validation (`schemas.js`) et ses composants, chacun avec son CSS Module.
 
 Quelques principes qui guident le code :
 
-- **Les droits sont vérifiés côté serveur** : chaque Server Action vérifie l'utilisateur avec `getCurrentUser()`, et la RLS refuse de toute façon ce qui n'est pas autorisé.
+- **Les droits sont vérifiés côté serveur** : chaque Server Action vérifie l'utilisateur avec `getCurrentProfile()`, et la RLS refuse de toute façon ce qui n'est pas autorisé.
 - **Le numéro du propriétaire n'est jamais envoyé au navigateur** d'un visiteur non connecté : il n'est lu, via la fonction `get_listing_contact`, que pour un utilisateur connecté.
-- **La clé secrète Supabase n'est jamais utilisée par l'application**, seulement par le script de seed.
+- **La clé secrète Supabase** contourne la RLS : elle n'est utilisée que par l'inscription (`src/lib/supabase/admin.js`) et par le script de seed.
 - **Les statuts liés au temps** sont gérés par la base : une tâche `pg_cron` publie chaque minute les annonces dont le délai de 5 minutes est écoulé et passe en « Libre » celles dont la date est atteinte. La vue `public_listings` filtre aussi sur la date de mise en ligne, et la fiche affiche « Libre » dès la date atteinte, même si la tâche a du retard.
 - **Interface mobile d'abord**, utilisable dès 360 px de large, en français, montants au format `150 000 FCFA`, fuseau horaire de Brazzaville.
 
 ---
+
+## Authentification
+
+- Connexion par **e-mail et mot de passe** (Supabase Auth). L'activation du téléphone dans Supabase exige un fournisseur SMS payant (Twilio, Vonage…), l'équipe a donc choisi l'e-mail.
+- Le **numéro WhatsApp reste obligatoire** à l'inscription. Il est enregistré dans `profiles.whatsapp_number` (format `+242` suivi de 9 chiffres, un numéro par compte) et sert au contact avec les propriétaires.
+- Aucune confirmation par e-mail : le compte est créé côté serveur, déjà confirmé, et l'utilisateur est connecté tout de suite.
+- `proxy.js` rafraîchit la session à chaque requête (`src/lib/supabase/proxy.js`).
+- Les trois clients Supabase sont dans `src/lib/supabase/` : `server.js` (Server Components et Server Actions), `client.js` (navigateur), `admin.js` (serveur uniquement, clé secrète, contourne la RLS).
 
 ## Prérequis
 
@@ -209,11 +212,11 @@ L'application est disponible sur http://localhost:3000.
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL du projet Supabase | Supabase : Project Settings, API |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Clé publique (`sb_publishable_…`), utilisée avec la session de l'utilisateur | Supabase : Project Settings, API Keys |
-| `SUPABASE_SECRET_KEY` | Clé secrète (`sb_secret_…`), utilisée **uniquement** par le script de seed | Supabase : Project Settings, API Keys |
+| `SUPABASE_SECRET_KEY` | Clé secrète (`sb_secret_…`), utilisée côté serveur par l'inscription et par le script de seed | Supabase : Project Settings, API Keys |
 | `DATABASE_URL` | Chaîne de connexion PostgreSQL, pour appliquer la migration et générer les types | Supabase : Connect, Session pooler ou connexion directe (port 5432) |
 | `NEXT_PUBLIC_SITE_URL` | Facultatif : URL publique du site, utilisée dans les messages WhatsApp. À défaut, l'hôte de la requête est utilisé | URL de production |
 
-Les fichiers `.env` et `.env.local` ne doivent **jamais** être commités. La clé `SUPABASE_SECRET_KEY` contourne la RLS et donne un accès complet au projet : elle ne doit jamais être importée par l'application ni porter le préfixe `NEXT_PUBLIC_`.
+Les fichiers `.env` et `.env.local` ne doivent **jamais** être commités. La clé `SUPABASE_SECRET_KEY` contourne la RLS et donne un accès complet au projet : elle ne doit être utilisée que côté serveur (`src/lib/supabase/admin.js`, protégé par `server-only`) et ne doit jamais porter le préfixe `NEXT_PUBLIC_`.
 
 ---
 
@@ -243,8 +246,6 @@ npm run db:seed
 | `npm run build` | Construit l'application pour la production |
 | `npm run start` | Lance l'application construite |
 | `npm run lint` | Vérifie la qualité du code |
-| `npm run format` | Formate le code avec Prettier |
-| `npm test` | Lance les tests unitaires (Vitest) |
 | `npm run db:types` | Génère les types de la base dans `src/lib/supabase/database.types.ts` (Docker requis) |
 | `npm run db:seed` | Charge les données de démonstration (rejouable) |
 
@@ -252,7 +253,7 @@ npm run db:seed
 
 ## Déploiement
 
-Le déploiement est prévu sur Vercel à partir de la branche `main`. Les variables d'environnement listées plus haut doivent être renseignées dans les paramètres du projet Vercel, avec `NEXT_PUBLIC_SITE_URL` pointant vers l'URL de production. `SUPABASE_SECRET_KEY` n'est pas nécessaire en production.
+Le déploiement est prévu sur Vercel à partir de la branche `main`. Les variables d'environnement listées plus haut doivent être renseignées dans les paramètres du projet Vercel, avec `NEXT_PUBLIC_SITE_URL` pointant vers l'URL de production. `SUPABASE_SECRET_KEY` est nécessaire en production pour l'inscription.
 
 Sur l'offre gratuite, un projet Supabase inactif pendant plusieurs jours est mis en pause automatiquement. Vérifier qu'il est actif avant chaque démonstration.
 

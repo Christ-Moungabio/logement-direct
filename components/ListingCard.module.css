@@ -1,0 +1,116 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  min-width: 0;
+}
+
+.media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-soft);
+}
+
+.photo {
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.card:hover .photo {
+  transform: scale(1.04);
+}
+
+.card:focus-visible {
+  outline: none;
+}
+.card:focus-visible .media {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.price {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 7px 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-canvas);
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-charcoal);
+  line-height: 1;
+}
+.price strong {
+  font-size: 15px;
+  font-weight: 850;
+  color: var(--color-ink);
+}
+
+.availability {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 11px 6px 9px;
+  border-radius: var(--radius-full);
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  font-size: 12.5px;
+  font-weight: 800;
+  line-height: 1;
+}
+.availability[data-soon] {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.card:hover .title {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--color-body);
+}
+
+.advance {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+}
+.advance strong {
+  font-weight: 850;
+  color: var(--color-ink);
+}
+
+.date {
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-hairline);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-body);
+}

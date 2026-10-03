@@ -34,8 +34,4 @@ writeFileSync(
   OUTPUT,
   `// Fichier généré par \`npm run db:types\` : ne pas modifier à la main.\n${result.stdout}`,
 );
-spawnSync("npx", ["prettier", "--write", OUTPUT], {
-  stdio: "inherit",
-  shell: process.platform === "win32",
-});
 console.log(`Types écrits dans ${OUTPUT}`);

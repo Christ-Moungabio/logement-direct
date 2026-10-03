@@ -17,7 +17,9 @@ import { createClient } from "@supabase/supabase-js";
 import sharp from "sharp";
 
 const BUCKET = "listing-photos";
-const AUTH_EMAIL_DOMAIN = "whatsapp.logement-direct.app"; // voir src/lib/auth-identity.js
+// Ancienne convention des comptes de démo (numéro → e-mail technique) : ces
+// comptes sont repris et passent aux adresses @ndako.cg.
+const LEGACY_EMAIL_DOMAIN = "whatsapp.logement-direct.app";
 
 const {
   NEXT_PUBLIC_SUPABASE_URL,
@@ -49,18 +51,21 @@ export const DEMO_ACCOUNTS = {
   tenant: {
     role: "tenant",
     fullName: "Lucie Mabiala",
+    email: "locataire@ndako.cg",
     whatsappNumber: "+242060000001",
     password: "Demo-Locataire-2026",
   },
   owner: {
     role: "owner",
     fullName: "Jean Moukoko",
+    email: "proprietaire@ndako.cg",
     whatsappNumber: "+242060000002",
     password: "Demo-Proprio-2026",
   },
   admin: {
     role: "admin",
     fullName: "Équipe Ndako",
+    email: "admin@ndako.cg",
     whatsappNumber: "+242060000003",
     password: "Demo-Admin-2026",
   },
@@ -219,8 +224,8 @@ const LISTINGS = [
   },
 ];
 
-const authEmail = (number) =>
-  `${number.replace(/\D/g, "")}@${AUTH_EMAIL_DOMAIN}`;
+const legacyEmail = (number) =>
+  `${number.replace(/\D/g, "")}@${LEGACY_EMAIL_DOMAIN}`;
 
 function check(error, context) {
   if (error) {
@@ -279,23 +284,25 @@ async function ensureCities() {
 }
 
 async function ensureAccount(account, cityId) {
-  const email = authEmail(account.whatsappNumber);
-  let user = await findAuthUserByEmail(email);
+  const { email } = account;
+  let user =
+    (await findAuthUserByEmail(email)) ??
+    (await findAuthUserByEmail(legacyEmail(account.whatsappNumber)));
 
   if (user) {
     const { error } = await admin.auth.admin.updateUserById(user.id, {
+      email,
+      email_confirm: true,
       password: account.password,
+      user_metadata: { full_name: account.fullName },
     });
-    check(error, `Mot de passe de ${account.fullName}`);
+    check(error, `Mise à jour de ${account.fullName}`);
   } else {
     const { data, error } = await admin.auth.admin.createUser({
       email,
       password: account.password,
       email_confirm: true,
-      user_metadata: {
-        full_name: account.fullName,
-        whatsapp_number: account.whatsappNumber,
-      },
+      user_metadata: { full_name: account.fullName },
     });
     check(error, `Création de ${account.fullName}`);
     user = data.user;
@@ -306,6 +313,7 @@ async function ensureAccount(account, cityId) {
       id: user.id,
       full_name: account.fullName,
       whatsapp_number: account.whatsappNumber,
+      email,
       role: account.role,
       city_id: cityId,
       terms_accepted_at: new Date().toISOString(),
@@ -323,7 +331,7 @@ async function signedInClient(account) {
     clientOptions,
   );
   const { error } = await client.auth.signInWithPassword({
-    email: authEmail(account.whatsappNumber),
+    email: account.email,
     password: account.password,
   });
   check(error, `Connexion de ${account.fullName}`);
@@ -541,10 +549,10 @@ async function main() {
   await Promise.all([ownerClient.auth.signOut(), adminClient.auth.signOut()]);
 
   console.table(created);
-  console.log("\nComptes (numéro WhatsApp / mot de passe) :");
+  console.log("\nComptes (e-mail / mot de passe) :");
   for (const account of Object.values(DEMO_ACCOUNTS)) {
     console.log(
-      `  ${account.role.padEnd(6)} ${account.whatsappNumber}  ${account.password}`,
+      `  ${account.role.padEnd(6)} ${account.email.padEnd(22)} ${account.password}`,
     );
   }
 }
