@@ -1,12 +1,3 @@
-// Annonces de démonstration, en attendant Supabase. V1 : Brazzaville seule (voir
-// lib/constants.js) — deux annonces reprennent des photos dont le nom de fichier
-// vient d'un repérage initial sur deux villes ; seuls city/district font foi.
-// Les champs suivent l'entité « Annonce » de la spécification (section 2.5) :
-// à remplacer par une requête sur les annonces au statut « Publiée » (RG-09),
-// triées de la plus récente à la plus ancienne (RG-19).
-// water / electricity : "individual" | "shared" | "none" (EF-ANN-04 ; enum Supabase utility_status).
-// availability : { status: "available" } ou { status: "available_soon", date } (RG-12).
-// Photos : Unsplash (licence Unsplash).
 import studioMoungali from "../public/images/annonce-studio-moungali.jpg";
 import appartementTieTie from "../public/images/annonce-appartement-tie-tie.jpg";
 import maisonBacongo from "../public/images/annonce-maison-bacongo.jpg";

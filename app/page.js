@@ -24,7 +24,6 @@ import heroPhoto from "../public/images/brazzaville-corniche.jpg";
 import finalPhoto from "../public/images/annonce-maison-loandjili.jpg";
 import styles from "./page.module.css";
 
-// Chiffres réels : enquête du projet et règles de la spécification.
 const STATS = [
   { value: "45 %", label: "des personnes interrogées dépendent d'un démarcheur pour trouver un logement" },
   { value: "5 min", label: "après le clic sur Publier, l'annonce est visible des locataires" },
@@ -55,7 +54,6 @@ const FEATURES = [
   },
 ];
 
-// Parcours P1 de la spécification : recherche, fiche, connexion, contact.
 const STEPS = [
   {
     Icon: Search,
@@ -120,7 +118,6 @@ export default function HomePage() {
       <Header />
 
       <main>
-        {/* Accueil : titre centré et recherche, sur une photo de Brazzaville */}
         <section id="accueil" className={styles.hero} aria-labelledby="hero-title">
           <Image
             src={heroPhoto}
@@ -160,7 +157,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* À propos et chiffres */}
         <section id="apropos" className={`container ${styles.section}`} aria-labelledby="apropos-title">
           <div className={styles.about}>
             <div className={styles.aboutLead}>
@@ -186,7 +182,6 @@ export default function HomePage() {
           </dl>
         </section>
 
-        {/* Fonctionnalités */}
         <section id="fonctionnalites" className={styles.band} aria-labelledby="fonctionnalites-title">
           <div className={`container ${styles.bandInner}`}>
             <div className={styles.sectionHead}>
@@ -212,7 +207,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Galerie : une fiche d'annonce */}
         <section className={`container ${styles.section}`} aria-labelledby="galerie-title">
           <div className={styles.sectionHead}>
             <h2 id="galerie-title" className="text-display-xl">
@@ -226,7 +220,6 @@ export default function HomePage() {
           <Gallery />
         </section>
 
-        {/* Logements */}
         <section id="logements" className={`container ${styles.section}`} aria-labelledby="logements-title">
           <div className={styles.sectionHead}>
             <h2 id="logements-title" className="text-display-xl">
@@ -242,7 +235,6 @@ export default function HomePage() {
           </Suspense>
         </section>
 
-        {/* Comment ça marche */}
         <section id="comment-ca-marche" className={styles.howBand} aria-labelledby="comment-title">
           <div className="container">
             <div className={styles.sectionHead}>
@@ -269,7 +261,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Témoignages */}
         <section className={`container ${styles.section}`} aria-labelledby="avis-title">
           <div className={styles.sectionHead}>
             <h2 id="avis-title" className="text-display-xl">
@@ -292,7 +283,6 @@ export default function HomePage() {
           <Testimonials />
         </section>
 
-        {/* Questions fréquentes */}
         <section id="faq" className={styles.band} aria-labelledby="faq-title">
           <div className={`container ${styles.faq}`}>
             <div className={styles.faqHead}>
@@ -315,7 +305,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Appel final */}
         <section className={styles.finalSection} aria-labelledby="final-title">
           <div className={`container`}>
             <div className={styles.final}>

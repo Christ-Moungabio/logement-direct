@@ -30,7 +30,6 @@
   transform: none;
 }
 
-/* Variantes */
 .primary {
   background: var(--color-primary);
   border-color: var(--color-primary);
@@ -59,7 +58,6 @@
   background: var(--color-surface-soft);
 }
 
-/* Sur fond sombre */
 .inverse {
   background: var(--color-canvas);
   border-color: var(--color-canvas);
@@ -70,7 +68,6 @@
   border-color: var(--color-primary-soft);
 }
 
-/* Tailles */
 .sm {
   height: 32px;
   padding: 0 14px;

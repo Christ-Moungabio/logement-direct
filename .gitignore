@@ -16,8 +16,6 @@
 # next.js
 /.next/
 /out/
-# régénéré automatiquement par `next dev`, jamais à committer
-/AGENTS.md
 
 # production
 /build
