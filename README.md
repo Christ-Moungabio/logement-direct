@@ -36,6 +36,14 @@ Le schéma initial de la base est dans [`supabase/migrations/20261002090000_sche
 Une annonce publiée devient visible après 5 minutes, sans validation préalable. Ses modifications sont immédiates.
 Cette première migration couvre les fonctionnalités Must ; les visites, avis et notifications seront ajoutés dans des migrations ultérieures.
 
+## Authentification
+
+- Connexion par **e-mail et mot de passe** (Supabase Auth). L'activation du téléphone dans Supabase exige un fournisseur SMS payant (Twilio, Vonage…), l'équipe a donc choisi l'e-mail.
+- Le **numéro WhatsApp reste obligatoire** à l'inscription. Il est enregistré dans `profiles.whatsapp_number` (format `+242` suivi de 9 chiffres, un numéro par compte) et sert au contact avec les propriétaires.
+- Aucune confirmation par e-mail : le compte est créé côté serveur, déjà confirmé, et l'utilisateur est connecté tout de suite.
+- `proxy.js` rafraîchit la session à chaque requête (`src/lib/supabase/proxy.js`).
+- Les trois clients Supabase sont dans `src/lib/supabase/` : `server.js` (Server Components et Server Actions), `client.js` (navigateur), `admin.js` (serveur uniquement, clé secrète, contourne la RLS).
+
 ## Prérequis
 
 - Node.js (version LTS récente)
