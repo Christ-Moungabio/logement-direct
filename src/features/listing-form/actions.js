@@ -1,9 +1,10 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireRole } from "../auth/queries";
 import { createClient } from "../../lib/supabase/server";
-import { draftSchema, fieldErrors } from "./schemas";
+import { draftSchema, fieldErrors, missingFieldErrors } from "./schemas";
 
 const GENERIC_ERROR = "Impossible d'enregistrer l'annonce pour le moment. Réessayez dans un instant.";
 
@@ -45,4 +46,31 @@ export async function createDraft(_previousState, formData) {
   if (error) return { values, formError: GENERIC_ERROR };
 
   redirect(`/mes-annonces/${data.id}/modifier`);
+}
+
+export async function updateListing(id, _previousState, formData) {
+  await requireRole("owner", `/mes-annonces/${id}/modifier`);
+
+  const values = formValues(formData);
+  const parsed = draftSchema.safeParse(values);
+  if (!parsed.success) {
+    return { values, errors: fieldErrors(parsed.error) };
+  }
+
+  const supabase = await createClient();
+  const { data: current } = await supabase.from("listings").select("status").eq("id", id).maybeSingle();
+  if (!current || !["draft", "scheduled", "published"].includes(current.status)) {
+    return { values, formError: "Cette annonce ne peut plus être modifiée." };
+  }
+
+  if (current.status !== "draft") {
+    const errors = missingFieldErrors(parsed.data);
+    if (Object.keys(errors).length > 0) return { values, errors };
+  }
+
+  const { data, error } = await supabase.from("listings").update(toRow(parsed.data)).eq("id", id).select("id");
+  if (error || data.length === 0) return { values, formError: GENERIC_ERROR };
+
+  revalidatePath("/mes-annonces");
+  return { values, saved: true };
 }

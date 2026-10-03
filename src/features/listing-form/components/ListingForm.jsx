@@ -53,6 +53,12 @@ export default function ListingForm({ action, options, initialValues = {}, submi
 
   return (
     <form ref={formRef} action={formAction} className={styles.form} noValidate>
+      {state?.saved && (
+        <p className={styles.success} role="status">
+          Modifications enregistrées.
+        </p>
+      )}
+
       {state?.formError && (
         <p className={styles.alert} role="alert">
           {state.formError}

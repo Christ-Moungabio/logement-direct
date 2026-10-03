@@ -61,3 +61,24 @@ export const draftSchema = z
 export function fieldErrors(error) {
   return z.flattenError(error).fieldErrors;
 }
+
+const REQUIRED_FIELDS = [
+  "propertyTypeId",
+  "cityId",
+  "neighborhoodId",
+  "monthlyRent",
+  "advanceMonths",
+  "description",
+  "water",
+  "electricity",
+  "availability",
+];
+
+// Une annonce déjà en ligne doit rester complète, seul le nombre de portes est facultatif.
+export function missingFieldErrors(data) {
+  const errors = {};
+  for (const field of REQUIRED_FIELDS) {
+    if (data[field] === undefined) errors[field] = ["Ce champ est obligatoire."];
+  }
+  return errors;
+}
