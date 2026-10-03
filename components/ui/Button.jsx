@@ -1,12 +1,6 @@
 import Link from "next/link";
 import styles from "./Button.module.css";
 
-/**
- * Bouton du design system. Rend un <Link> si `href` est fourni, sinon un <button>.
- *
- * variant : "primary" | "secondary" | "ghost" | "inverse" (sur fond sombre)
- * size    : "sm" (32 px) | "md" (36 px) | "lg" (44 px)
- */
 export default function Button({
   href,
   variant = "primary",

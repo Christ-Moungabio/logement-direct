@@ -18,8 +18,6 @@ export function LogoMark({ size = 32 }) {
   );
 }
 
-// En-tête public (visiteur non connecté).
-// Le menu mobile utilise <details> : il fonctionne sans JavaScript.
 export default function Header() {
   return (
     <header className={styles.header}>

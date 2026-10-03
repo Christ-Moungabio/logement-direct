@@ -10,17 +10,13 @@ import styles from "./ListingsExplorer.module.css";
 
 const TYPE_FILTERS = [{ value: "", label: "Tous les types" }, ...PROPERTY_TYPES];
 
-// V1 Brazzaville seule (lib/constants.js) : pas de filtre par ville tant qu'il
-// n'y a qu'une seule option. À réintroduire ici quand une 2e ville s'ajoutera.
 export default function ListingsExplorer({ listings, initialCriteria = EMPTY_CRITERIA }) {
   const [criteria, setCriteria] = useState(initialCriteria);
-  // Tri par défaut : plus récentes d'abord (RG-19).
   const visible = listings
     .filter((listing) => matchesCriteria(listing, criteria))
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
   const isFiltered = criteria.type || criteria.budget;
 
-  // Critères envoyés par la barre de recherche du hero.
   useEffect(() => {
     function handleSearch(event) {
       setCriteria({ ...EMPTY_CRITERIA, ...event.detail });

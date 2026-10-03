@@ -6,8 +6,6 @@ export const metadata = {
     "Les informations que Ndako vous demande, à quoi elles servent et qui peut les voir. Votre numéro n'est jamais montré aux visiteurs non connectés.",
 };
 
-// Texte à faire valider par le PM (ticket #6). Règles reprises du cadrage :
-// RG-02, RG-13, ENF-03, ENF-07, et le schéma Supabase (profiles, reports).
 const SECTIONS = [
   {
     id: "collecte",

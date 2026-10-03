@@ -4,8 +4,6 @@ import Footer from "./Footer";
 import { formatLongDate } from "../lib/format";
 import styles from "./LegalPage.module.css";
 
-// Mise en page commune des pages Conditions d'utilisation et Confidentialité.
-// Chaque section : { id, title, paragraphs?, items?, after? }.
 export default function LegalPage({ title, updatedAt, intro, sections, related }) {
   return (
     <>

@@ -6,7 +6,6 @@ import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import taxis from "../../public/images/brazzaville-taxis.jpg";
 import styles from "./Testimonials.module.css";
 
-// Témoignages fictifs, validés pour la démonstration au jury : à remplacer par de vrais retours.
 const TESTIMONIALS = [
   {
     quote:

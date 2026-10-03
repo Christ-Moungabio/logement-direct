@@ -10,7 +10,6 @@ export const metadata = {
     "Créez votre compte Ndako pour contacter les propriétaires ou publier vos annonces de logement à Brazzaville.",
 };
 
-// Les liens de l'accueil envoient ?role=locataire ou ?role=proprietaire.
 const ROLE_PARAMS = { locataire: "tenant", proprietaire: "owner" };
 
 export default async function InscriptionPage({ searchParams }) {

@@ -5,10 +5,6 @@ import { PROPERTY_TYPES } from "../../lib/constants";
 import { SEARCH_EVENT } from "../../lib/search";
 import styles from "../../app/page.module.css";
 
-// Barre de recherche du hero : elle applique les critères aux annonces de la
-// section Logements, puis y fait défiler la page.
-// V1 Brazzaville seule (lib/constants.js) : pas de champ Ville tant qu'il n'y a
-// qu'une seule option. À réintroduire ici quand une 2e ville s'ajoutera à CITIES.
 export default function HeroSearch() {
   function handleSubmit(event) {
     event.preventDefault();
