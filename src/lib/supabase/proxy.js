@@ -1,8 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
-// Rafraîchit le jeton de session avant le rendu : les Server Components
-// ne peuvent pas écrire de cookies, c'est donc ici que le jeton est renouvelé.
 export async function updateSession(request) {
   let response = NextResponse.next({ request });
 
@@ -26,8 +24,6 @@ export async function updateSession(request) {
     },
   );
 
-  // Aucun code entre la création du client et cet appel : sinon la session
-  // peut ne pas être rafraîchie et l'utilisateur se retrouve déconnecté.
   const { data } = await supabase.auth.getClaims();
 
   return { response, claims: data?.claims ?? null };
