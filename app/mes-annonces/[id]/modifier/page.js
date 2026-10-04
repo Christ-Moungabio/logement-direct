@@ -4,7 +4,9 @@ import Header from "../../../../components/Header";
 import { requireRole } from "../../../../src/features/auth/queries";
 import { updateListing } from "../../../../src/features/listing-form/actions";
 import ListingForm from "../../../../src/features/listing-form/components/ListingForm";
+import PublishPanel from "../../../../src/features/listing-form/components/PublishPanel";
 import PhotoManager from "../../../../src/features/listing-form/components/PhotoManager";
+import { publishChecklist } from "../../../../src/features/listing-form/checklist";
 import { getFormOptions, getListingPhotos } from "../../../../src/features/listing-form/queries";
 import { createClient } from "../../../../src/lib/supabase/server";
 import styles from "./page.module.css";
@@ -43,6 +45,7 @@ export default async function EditListingPage({ params }) {
 
   const [options, photos] = await Promise.all([getFormOptions(), getListingPhotos(id)]);
   const isDraft = listing.status === "draft";
+  const isScheduled = listing.status === "scheduled" && new Date(listing.visible_from) > new Date();
 
   return (
     <>
@@ -59,6 +62,17 @@ export default async function EditListingPage({ params }) {
               : "Vos modifications sont visibles tout de suite par les locataires."}
           </p>
         </div>
+        {isScheduled && (
+          <p className={styles.notice} role="status">
+            Votre annonce est en cours de mise en ligne : les locataires la verront vers{" "}
+            {new Date(listing.visible_from).toLocaleTimeString("fr-FR", {
+              hour: "2-digit",
+              minute: "2-digit",
+              timeZone: "Africa/Brazzaville",
+            })}
+            . D&apos;ici là, vous pouvez encore la modifier ou la retirer depuis Mes annonces.
+          </p>
+        )}
         <PhotoManager listingId={id} photos={photos} />
         <ListingForm
           action={updateListing.bind(null, id)}
@@ -66,6 +80,7 @@ export default async function EditListingPage({ params }) {
           initialValues={toFormValues(listing)}
           submitLabel="Enregistrer"
         />
+        {isDraft && <PublishPanel listingId={id} checklist={publishChecklist(listing, photos.length)} />}
       </main>
     </>
   );

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireRole } from "../auth/queries";
 import { createClient } from "../../lib/supabase/server";
+import { isReadyToPublish } from "./checklist";
 import { draftSchema, fieldErrors, missingFieldErrors } from "./schemas";
 
 const GENERIC_ERROR = "Impossible d'enregistrer l'annonce pour le moment. Réessayez dans un instant.";
@@ -73,4 +74,29 @@ export async function updateListing(id, _previousState, formData) {
 
   revalidatePath("/mes-annonces");
   return { values, saved: true };
+}
+
+export async function publishListing(id) {
+  await requireRole("owner", `/mes-annonces/${id}/modifier`);
+  const supabase = await createClient();
+
+  const { data: listing } = await supabase.from("listings").select("*").eq("id", id).maybeSingle();
+  if (!listing || listing.status !== "draft") {
+    return { error: "Cette annonce n'est plus un brouillon." };
+  }
+
+  const { count } = await supabase
+    .from("listing_photos")
+    .select("id", { count: "exact", head: true })
+    .eq("listing_id", id);
+  if (!isReadyToPublish(listing, count ?? 0)) {
+    return { error: "Complétez les éléments manquants avant de publier." };
+  }
+
+  // La base fixe l'heure de mise en ligne à 5 minutes après ce clic.
+  const { error } = await supabase.from("listings").update({ status: "scheduled" }).eq("id", id);
+  if (error) return { error: GENERIC_ERROR };
+
+  revalidatePath("/mes-annonces");
+  redirect(`/mes-annonces/${id}/modifier`);
 }
