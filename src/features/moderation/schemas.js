@@ -11,3 +11,7 @@ export const hideListingSchema = z.object({
     .min(HIDE_REASON_MIN_LENGTH, `Expliquez le motif en ${HIDE_REASON_MIN_LENGTH} caractères minimum.`)
     .max(HIDE_REASON_MAX_LENGTH, `Le motif ne doit pas dépasser ${HIDE_REASON_MAX_LENGTH} caractères.`),
 });
+
+export const hideFromReportSchema = hideListingSchema.extend({
+  reportId: z.uuid({ error: "Signalement introuvable." }),
+});
