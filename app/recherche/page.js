@@ -1,18 +1,20 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getFilterOptions } from "@/lib/reference-data";
-import { ActiveFilters } from "@/features/recherche/components/active-filters";
-import { EmptyResults } from "@/features/recherche/components/empty-results";
-import { FiltersPanel } from "@/features/recherche/components/filters-panel";
-import { Pagination } from "@/features/recherche/components/pagination";
-import { ResultsList } from "@/features/recherche/components/results-list";
-import { SortSelect } from "@/features/recherche/components/sort-select";
-import { searchListings } from "@/features/recherche/queries";
-import { parseSearchParams } from "@/features/recherche/schemas";
-import { buildSearchHref } from "@/features/recherche/url";
+import { ActiveFilters } from "@/src/features/recherche/components/active-filters";
+import { EmptyResults } from "@/src/features/recherche/components/empty-results";
+import { FiltersPanel } from "@/src/features/recherche/components/filters-panel";
+import { Pagination } from "@/src/features/recherche/components/pagination";
+import { ResultsList } from "@/src/features/recherche/components/results-list";
+import { SortSelect } from "@/src/features/recherche/components/sort-select";
+import { searchListings } from "@/src/features/recherche/queries"; 
+import { parseSearchParams } from "@/src/features/recherche/schemas";
+import { buildSearchHref } from "@/src/features/recherche/url";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import styles from "@/features/recherche/recherche.module.css";
+import styles from "@/src/features/recherche/recherche.module.css";
+
+export const metadata = { title: "Rechercher un logement" };
 
 export default async function RecherchePage({ searchParams }) {
   const { filters, error } = parseSearchParams(await searchParams);
