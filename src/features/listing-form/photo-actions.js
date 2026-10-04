@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { requireRole } from "../auth/queries";
 import { createClient } from "../../lib/supabase/server";
 import { PHOTOS_BUCKET } from "./photos";
 
@@ -15,6 +16,8 @@ async function findPhoto(supabase, photoId) {
 }
 
 export async function setPrimaryPhoto(formData) {
+  await requireRole("owner", "/mes-annonces");
+
   const supabase = await createClient();
   const photo = await findPhoto(supabase, formData.get("photoId"));
 
@@ -33,12 +36,16 @@ export async function setPrimaryPhoto(formData) {
 }
 
 export async function deletePhoto(formData) {
+  await requireRole("owner", "/mes-annonces");
+
   const supabase = await createClient();
   const photo = await findPhoto(supabase, formData.get("photoId"));
 
   // La base désigne elle-même une nouvelle photo principale si on supprime l'actuelle.
-  const { error } = await supabase.from("listing_photos").delete().eq("id", photo.id);
+  // Un delete refusé par la RLS renvoie 0 ligne sans erreur : on le vérifie avant de toucher au fichier.
+  const { data, error } = await supabase.from("listing_photos").delete().eq("id", photo.id).select("id");
   if (error) throw new Error(`Impossible de supprimer la photo : ${error.message}`);
+  if (data.length === 0) throw new Error("Impossible de supprimer la photo : action non autorisée.");
 
   await supabase.storage.from(PHOTOS_BUCKET).remove([photo.storage_path]);
   revalidatePath(`/mes-annonces/${photo.listing_id}/modifier`);
