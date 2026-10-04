@@ -88,15 +88,17 @@ Agences et démarcheurs, paiement en ligne et Mobile Money, réservation finale 
 
 Ces comptes sont créés par le script de seed (voir [Base de données](#base-de-données)). On se connecte sur `/connexion` avec l'adresse e-mail et le mot de passe.
 
-| Rôle | E-mail | Mot de passe | Numéro WhatsApp |
-|---|---|---|---|
-| Locataire | `locataire@ndako.cg` | `Demo-Locataire-2026` | +242 06 000 00 01 |
-| Propriétaire | `proprietaire@ndako.cg` | `Demo-Proprio-2026` | +242 06 000 00 02 |
-| Administrateur | `admin@ndako.cg` | `Demo-Admin-2026` | +242 06 000 00 03 |
+| Rôle | E-mail | Numéro WhatsApp |
+|---|---|---|
+| Locataire | `locataire@ndako.cg` | +242 06 000 00 01 |
+| Propriétaire | `proprietaire@ndako.cg` | +242 06 000 00 02 |
+| Administrateur | `admin@ndako.cg` | +242 06 000 00 03 |
+
+Les mots de passe ne sont **jamais** écrits dans le dépôt : ils sont partagés sur le groupe de l'équipe et lus par le seed dans `.env.local` (`DEMO_TENANT_PASSWORD`, `DEMO_OWNER_PASSWORD`, `DEMO_ADMIN_PASSWORD`).
 
 Le compte administrateur ne peut pas être créé depuis l'inscription publique.
 
-Le seed crée aussi sept annonces du propriétaire de démonstration, qui couvrent les cas de la fiche annonce : annonce complète (8 photos, nombre de portes), une seule photo sans nombre de portes, « Bientôt libre », une annonce à Pointe-Noire, un brouillon, une annonce fermée et une annonce masquée. Les liens sont affichés à la fin de `npm run db:seed`. Les photos sont des images générées, sans droits.
+Le seed crée aussi sept annonces du propriétaire de démonstration à Brazzaville, qui couvrent les cas de la fiche annonce : annonce complète (8 photos, nombre de portes), une seule photo sans nombre de portes, « Bientôt libre », une quatrième annonce en ligne, un brouillon, une annonce fermée et une annonce masquée. Les liens sont affichés à la fin de `npm run db:seed`. Les photos sont des images générées, sans droits.
 
 ---
 
@@ -133,9 +135,9 @@ src/
 ├── features/             # Une fonctionnalité = un dossier
 │   ├── annonces/         # Fiche annonce (module FIC)
 │   └── auth/             # Inscription, connexion, getCurrentProfile, requireUser
-└── lib/supabase/         # Clients Supabase et types générés
+└── lib/supabase/         # Clients Supabase (serveur, navigateur, admin)
 supabase/migrations/      # Schéma de la base (SQL)
-scripts/                  # Seed et génération des types
+scripts/                  # Seed des données de démonstration
 ```
 
 Les autres modules (recherche, propriétaire, locataire, administration) viendront s'ajouter dans `app/` et `src/features/` selon la même organisation.
@@ -166,7 +168,6 @@ Quelques principes qui guident le code :
 - npm 10 ou supérieur
 - Git
 - Un projet Supabase (l'offre gratuite suffit)
-- Docker, uniquement pour régénérer les types de la base (`npm run db:types`)
 
 ---
 
@@ -213,8 +214,9 @@ L'application est disponible sur http://localhost:3000.
 | `NEXT_PUBLIC_SUPABASE_URL` | URL du projet Supabase | Supabase : Project Settings, API |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Clé publique (`sb_publishable_…`), utilisée avec la session de l'utilisateur | Supabase : Project Settings, API Keys |
 | `SUPABASE_SECRET_KEY` | Clé secrète (`sb_secret_…`), utilisée côté serveur par l'inscription et par le script de seed | Supabase : Project Settings, API Keys |
-| `DATABASE_URL` | Chaîne de connexion PostgreSQL, pour appliquer la migration et générer les types | Supabase : Connect, Session pooler ou connexion directe (port 5432) |
+| `DATABASE_URL` | Chaîne de connexion PostgreSQL, pour appliquer la migration | Supabase : Connect, Session pooler ou connexion directe (port 5432) |
 | `NEXT_PUBLIC_SITE_URL` | Facultatif : URL publique du site, utilisée dans les messages WhatsApp. À défaut, l'hôte de la requête est utilisé | URL de production |
+| `DEMO_TENANT_PASSWORD`, `DEMO_OWNER_PASSWORD`, `DEMO_ADMIN_PASSWORD` | Mots de passe des comptes de démo, lus uniquement par `npm run db:seed` (12 caractères minimum) | Groupe de l'équipe |
 
 Les fichiers `.env` et `.env.local` ne doivent **jamais** être commités. La clé `SUPABASE_SECRET_KEY` contourne la RLS et donne un accès complet au projet : elle ne doit être utilisée que côté serveur (`src/lib/supabase/admin.js`, protégé par `server-only`) et ne doit jamais porter le préfixe `NEXT_PUBLIC_`.
 
@@ -224,13 +226,7 @@ Les fichiers `.env` et `.env.local` ne doivent **jamais** être commités. La cl
 
 Le schéma est défini en SQL dans `supabase/migrations/20261002090000_schema_initial.sql` : tables, vue publique `public_listings`, fonction `get_listing_contact`, politiques RLS, bucket des photos et tâche `pg_cron`. Une migration déjà appliquée ne doit pas être modifiée : toute évolution passe par un **nouveau** fichier dans `supabase/migrations/`, validé par l'équipe.
 
-Après une évolution du schéma, régénérer les types (Docker doit être lancé) :
-
-```bash
-npm run db:types
-```
-
-Le script de seed crée les trois comptes de démonstration, ajoute Pointe-Noire et ses quartiers (Brazzaville est créée par la migration), puis sept annonces avec leurs photos, dont quatre en ligne. Il est rejouable : il ne supprime que les annonces, photos et signalements des comptes de démonstration. Les identifiants des annonces changent à chaque exécution.
+Le script de seed crée les trois comptes de démonstration (mots de passe lus dans `.env.local`), puis sept annonces avec leurs photos à Brazzaville, dont quatre en ligne. Brazzaville et ses quartiers sont créés par la migration : la V1 est limitée à Brazzaville. Il est rejouable : il ne supprime que les annonces, photos et signalements des comptes de démonstration. Les identifiants des annonces changent à chaque exécution.
 
 ```bash
 npm run db:seed
@@ -246,7 +242,6 @@ npm run db:seed
 | `npm run build` | Construit l'application pour la production |
 | `npm run start` | Lance l'application construite |
 | `npm run lint` | Vérifie la qualité du code |
-| `npm run db:types` | Génère les types de la base dans `src/lib/supabase/database.types.ts` (Docker requis) |
 | `npm run db:seed` | Charge les données de démonstration (rejouable) |
 
 ---

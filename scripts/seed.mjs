@@ -1,8 +1,9 @@
 // Données de démonstration : comptes, villes, annonces et photos.
 // Usage : npm run db:seed (lit .env.local ou .env).
 //
-// SEUL endroit autorisé à utiliser SUPABASE_SECRET_KEY : script de
-// développement séparé, jamais importé par l'application.
+// Script de développement séparé, jamais importé par l'application. Il utilise
+// SUPABASE_SECRET_KEY et lit les mots de passe des comptes de démo dans
+// .env.local (DEMO_*_PASSWORD) : aucun mot de passe n'est écrit dans le dépôt.
 //
 // Le trigger `guard_listing_changes` empêche la clé secrète de publier une
 // annonce. Le script passe donc par les vraies sessions : le propriétaire
@@ -25,16 +26,32 @@ const {
   NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   SUPABASE_SECRET_KEY,
+  DEMO_TENANT_PASSWORD,
+  DEMO_OWNER_PASSWORD,
+  DEMO_ADMIN_PASSWORD,
 } = process.env;
 
-if (
-  !NEXT_PUBLIC_SUPABASE_URL ||
-  !NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-  !SUPABASE_SECRET_KEY
-) {
-  console.error(
-    "Variables manquantes : NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY et SUPABASE_SECRET_KEY.",
-  );
+const REQUIRED_VARIABLES = {
+  NEXT_PUBLIC_SUPABASE_URL,
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  SUPABASE_SECRET_KEY,
+  DEMO_TENANT_PASSWORD,
+  DEMO_OWNER_PASSWORD,
+  DEMO_ADMIN_PASSWORD,
+};
+
+const missing = Object.keys(REQUIRED_VARIABLES).filter((name) => !REQUIRED_VARIABLES[name]);
+if (missing.length) {
+  console.error(`Variables manquantes dans .env.local ou .env : ${missing.join(", ")}.`);
+  process.exit(1);
+}
+
+// Les mots de passe ne sont jamais écrits dans le dépôt : ils viennent de .env.local.
+const tooShort = ["DEMO_TENANT_PASSWORD", "DEMO_OWNER_PASSWORD", "DEMO_ADMIN_PASSWORD"].filter(
+  (name) => REQUIRED_VARIABLES[name].length < 12,
+);
+if (tooShort.length) {
+  console.error(`Mots de passe trop courts (12 caractères minimum) : ${tooShort.join(", ")}.`);
   process.exit(1);
 }
 
@@ -53,21 +70,21 @@ export const DEMO_ACCOUNTS = {
     fullName: "Lucie Mabiala",
     email: "locataire@ndako.cg",
     whatsappNumber: "+242060000001",
-    password: "Demo-Locataire-2026",
+    password: DEMO_TENANT_PASSWORD,
   },
   owner: {
     role: "owner",
     fullName: "Jean Moukoko",
     email: "proprietaire@ndako.cg",
     whatsappNumber: "+242060000002",
-    password: "Demo-Proprio-2026",
+    password: DEMO_OWNER_PASSWORD,
   },
   admin: {
     role: "admin",
     fullName: "Équipe Ndako",
     email: "admin@ndako.cg",
     whatsappNumber: "+242060000003",
-    password: "Demo-Admin-2026",
+    password: DEMO_ADMIN_PASSWORD,
   },
 };
 
@@ -83,7 +100,6 @@ const CITIES = {
     "Madibou",
     "Djiri",
   ],
-  "Pointe-Noire": ["Tié-Tié", "Loandjili", "Mpita", "Lumumba", "Mongo-Mpoukou"],
 };
 
 const ROOMS = [
@@ -108,7 +124,7 @@ const PALETTE = [
 ];
 
 // Cas couverts : complète (8 photos, portes), une seule photo sans portes,
-// « Bientôt libre », brouillon, fermée, masquée, et une annonce à Pointe-Noire.
+// « Bientôt libre », brouillon, fermée, masquée. V1 : Brazzaville uniquement.
 const LISTINGS = [
   {
     key: "complete",
@@ -159,10 +175,10 @@ const LISTINGS = [
       "Maison de trois chambres avec salon, cuisine et deux douches. Parcelle clôturée avec portail. Le locataire actuel part à la fin du mois.",
   },
   {
-    key: "pointe-noire",
+    key: "mfilou",
     target: "published",
-    city: "Pointe-Noire",
-    neighborhood: "Tié-Tié",
+    city: "Brazzaville",
+    neighborhood: "Mfilou",
     type: "appartement",
     monthlyRent: 180000,
     advanceMonths: 3,
@@ -172,7 +188,7 @@ const LISTINGS = [
     availableInDays: null,
     photos: 5,
     description:
-      "Appartement lumineux de deux chambres, à cinq minutes du rond-point Lumumba. Électricité partagée avec un autre logement de la parcelle.",
+      "Appartement lumineux de deux chambres dans une rue calme de Mfilou. Électricité partagée avec un autre logement de la parcelle.",
   },
   {
     key: "draft",
@@ -549,11 +565,9 @@ async function main() {
   await Promise.all([ownerClient.auth.signOut(), adminClient.auth.signOut()]);
 
   console.table(created);
-  console.log("\nComptes (e-mail / mot de passe) :");
+  console.log("\nComptes (mots de passe dans .env.local) :");
   for (const account of Object.values(DEMO_ACCOUNTS)) {
-    console.log(
-      `  ${account.role.padEnd(6)} ${account.email.padEnd(22)} ${account.password}`,
-    );
+    console.log(`  ${account.role.padEnd(6)} ${account.email}`);
   }
 }
 
