@@ -1,4 +1,4 @@
-import { ListingCard, SearchResultCard } from "@/components/SearchResultCard";
+import { SearchResultCard } from "@/components/SearchResultCard";
 import styles from "../recherche.module.css";
 
 export function ResultsList({ items }) {
