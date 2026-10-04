@@ -7,7 +7,7 @@ export const ROLE_LABELS = {
 const HOME_BY_ROLE = {
   owner: "/mes-annonces",
   tenant: "/recherche",
-  admin: "/",
+  admin: "/admin",
 };
 
 export function homeForRole(role) {
