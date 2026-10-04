@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import Image from "next/image";
 import {
   ArrowRight,
@@ -16,10 +15,9 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Gallery from "../components/home/Gallery";
 import HeroSearch from "../components/home/HeroSearch";
-import ListingsExplorer from "../components/home/ListingsExplorer";
-import ListingsFromUrl from "../components/home/ListingsFromUrl";
+import LatestListings from "../components/home/LatestListings";
 import Testimonials from "../components/home/Testimonials";
-import { LISTINGS } from "../data/listings";
+import { getLatestListings, getPropertyTypes } from "../src/features/accueil/queries";
 import heroPhoto from "../public/images/brazzaville-corniche.jpg";
 import finalPhoto from "../public/images/annonce-maison-loandjili.jpg";
 import styles from "./page.module.css";
@@ -112,7 +110,9 @@ const FAQ = [
 
 const REVIEW_INITIALS = ["MM", "AK", "GL"];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [listings, propertyTypes] = await Promise.all([getLatestListings(6), getPropertyTypes()]);
+
   return (
     <>
       <Header />
@@ -138,7 +138,7 @@ export default function HomePage() {
               Comparez le loyer et l&apos;avance demandée, puis contactez le propriétaire directement.
             </p>
 
-            <HeroSearch />
+            <HeroSearch propertyTypes={propertyTypes} />
 
             <ul className={styles.promises}>
               <li>
@@ -223,16 +223,14 @@ export default function HomePage() {
         <section id="logements" className={`container ${styles.section}`} aria-labelledby="logements-title">
           <div className={styles.sectionHead}>
             <h2 id="logements-title" className="text-display-xl">
-              Explorez les logements disponibles
+              Les dernières annonces
             </h2>
             <p className={styles.sectionAside}>
               Studios, chambres, appartements et maisons : le vrai marché de Brazzaville, du plus simple au plus
               spacieux.
             </p>
           </div>
-          <Suspense fallback={<ListingsExplorer listings={LISTINGS} />}>
-            <ListingsFromUrl listings={LISTINGS} />
-          </Suspense>
+          <LatestListings listings={listings} propertyTypes={propertyTypes} />
         </section>
 
         <section id="comment-ca-marche" className={styles.howBand} aria-labelledby="comment-title">
