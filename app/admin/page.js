@@ -12,7 +12,13 @@ export default async function AdminHomePage() {
   const firstName = profile.full_name.split(" ")[0];
 
   const stats = [
-    { label: "Signalements à traiter", value: counts.pendingReports, icon: Flag, urgent: counts.pendingReports > 0 },
+    {
+      label: "Signalements à traiter",
+      value: counts.pendingReports,
+      icon: Flag,
+      urgent: counts.pendingReports > 0,
+      href: "/admin/signalements",
+    },
     { label: "Annonces masquées", value: counts.hiddenListings, icon: EyeOff, href: "/admin/annonces?statut=masquees" },
     { label: "Annonces en ligne", value: counts.liveListings, icon: House, href: "/admin/annonces" },
   ];

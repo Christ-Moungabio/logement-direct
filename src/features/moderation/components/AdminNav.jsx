@@ -6,6 +6,7 @@ import styles from "./AdminNav.module.css";
 
 const LINKS = [
   { href: "/admin", label: "Vue d'ensemble" },
+  { href: "/admin/signalements", label: "Signalements" },
   { href: "/admin/annonces", label: "Annonces" },
 ];
 
