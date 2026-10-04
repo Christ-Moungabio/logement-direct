@@ -1,0 +1,22 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  max-width: 520px;
+  padding-top: var(--space-3xl);
+  padding-bottom: var(--space-3xl);
+  text-align: center;
+}
+
+.text {
+  color: var(--color-body);
+  font-weight: 550;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+}
