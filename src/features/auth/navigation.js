@@ -5,8 +5,8 @@ export const ROLE_LABELS = {
 };
 
 const HOME_BY_ROLE = {
-  owner: "/",
-  tenant: "/",
+  owner: "/mes-annonces",
+  tenant: "/recherche",
   admin: "/",
 };
 

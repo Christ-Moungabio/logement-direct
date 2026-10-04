@@ -40,7 +40,7 @@ const SECTIONS = [
     id: "moderation",
     title: "Signalement et modération",
     paragraphs: [
-      "Les annonces ne sont pas vérifiées avant leur mise en ligne. Tout utilisateur connecté peut donc signaler depuis sa fiche une annonce fausse, déjà louée ou suspecte d'arnaque.",
+      "Les annonces ne sont pas vérifiées avant leur mise en ligne. Tout locataire connecté peut donc signaler depuis sa fiche une annonce fausse, déjà louée ou suspecte d'arnaque.",
       "L'équipe Ndako examine chaque signalement. Elle peut masquer une annonce en indiquant le motif : le propriétaire voit ce motif dans son espace, mais ne peut pas republier l'annonce lui-même. En cas d'abus, l'équipe peut aussi suspendre un compte.",
     ],
   },
