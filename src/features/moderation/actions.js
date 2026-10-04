@@ -65,7 +65,7 @@ export async function restoreListing(formData) {
 }
 
 export async function hideListingFromReport(_previousState, formData) {
-  const profile = await requireRole("admin", REPORTS_PATH);
+  await requireRole("admin", REPORTS_PATH);
 
   const values = {
     reportId: formData.get("reportId"),
@@ -78,21 +78,12 @@ export async function hideListingFromReport(_previousState, formData) {
   }
 
   const supabase = await createClient();
-  if (!(await hideListingRow(supabase, parsed.data.listingId, parsed.data.reason))) {
+  const { error } = await supabase.rpc("hide_listing_and_resolve_reports", {
+    p_listing_id: parsed.data.listingId,
+    p_reason: parsed.data.reason,
+  });
+  if (error) {
     return { values, formError: HIDE_ERROR };
-  }
-
-  const closed = await closeReports(
-    supabase,
-    (query) => query.eq("listing_id", parsed.data.listingId),
-    "resolved",
-    profile.id,
-  );
-  if (!closed) {
-    return {
-      values,
-      formError: "L'annonce est masquée, mais le signalement n'a pas pu être clôturé. Marquez-le comme traité.",
-    };
   }
 
   revalidatePath("/", "layout");
