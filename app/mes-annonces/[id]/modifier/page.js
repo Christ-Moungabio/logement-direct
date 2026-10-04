@@ -4,7 +4,8 @@ import Header from "../../../../components/Header";
 import { requireRole } from "../../../../src/features/auth/queries";
 import { updateListing } from "../../../../src/features/listing-form/actions";
 import ListingForm from "../../../../src/features/listing-form/components/ListingForm";
-import { getFormOptions } from "../../../../src/features/listing-form/queries";
+import PhotoManager from "../../../../src/features/listing-form/components/PhotoManager";
+import { getFormOptions, getListingPhotos } from "../../../../src/features/listing-form/queries";
 import { createClient } from "../../../../src/lib/supabase/server";
 import styles from "./page.module.css";
 
@@ -40,7 +41,7 @@ export default async function EditListingPage({ params }) {
   if (!listing) notFound();
   if (listing.status === "hidden" || listing.status === "closed") redirect("/mes-annonces");
 
-  const options = await getFormOptions();
+  const [options, photos] = await Promise.all([getFormOptions(), getListingPhotos(id)]);
   const isDraft = listing.status === "draft";
 
   return (
@@ -58,6 +59,7 @@ export default async function EditListingPage({ params }) {
               : "Vos modifications sont visibles tout de suite par les locataires."}
           </p>
         </div>
+        <PhotoManager listingId={id} photos={photos} />
         <ListingForm
           action={updateListing.bind(null, id)}
           options={options}
