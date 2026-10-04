@@ -22,7 +22,7 @@
 }
 
 .photoEmpty {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-muted, #6b7280);
 }
 
@@ -38,11 +38,11 @@
 
 .title {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .meta {
   margin: 0;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--color-muted, #6b7280);
 }

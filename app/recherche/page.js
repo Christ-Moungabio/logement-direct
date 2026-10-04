@@ -10,6 +10,8 @@ import { SortSelect } from "@/features/recherche/components/sort-select";
 import { searchListings } from "@/features/recherche/queries";
 import { parseSearchParams } from "@/features/recherche/schemas";
 import { buildSearchHref } from "@/features/recherche/url";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import styles from "@/features/recherche/recherche.module.css";
 
 export default async function RecherchePage({ searchParams }) {
@@ -30,6 +32,7 @@ export default async function RecherchePage({ searchParams }) {
   const city = options.cities.find((c) => c.id === filters.ville);
 
   return (
+    <><Header/>
     <main className={styles.page}>
       <nav aria-label="Fil d'Ariane" className={styles.breadcrumb}>
         <Link href="/">Accueil</Link> / {city ? city.name : "Toutes les villes"}
@@ -84,5 +87,7 @@ export default async function RecherchePage({ searchParams }) {
         Réservation finale et caution à régler directement avec le propriétaire.
       </p>
     </main>
+    <Footer/>
+    </>
   );
-}
+}     
