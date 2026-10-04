@@ -67,3 +67,36 @@ export async function deleteListing(formData) {
 
   revalidatePath("/mes-annonces");
 }
+
+function brazzavilleToday() {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Brazzaville" });
+}
+
+export async function updateAvailability(formData) {
+  await requireRole("owner", "/mes-annonces");
+
+  const id = formData.get("id");
+  const availability = formData.get("availability");
+  const date = formData.get("availableFrom");
+
+  if (availability !== "available" && availability !== "available_soon") {
+    throw new Error("Disponibilité invalide.");
+  }
+  if (availability === "available_soon" && !(date && date > brazzavilleToday())) {
+    throw new Error("Indiquez une date de disponibilité dans le futur.");
+  }
+
+  const supabase = await createClient();
+  const result = await supabase
+    .from("listings")
+    .update({
+      availability,
+      available_from: availability === "available_soon" ? date : null,
+    })
+    .eq("id", id)
+    .in("status", ["scheduled", "published"])
+    .select("id");
+  check(result, "Impossible de changer la disponibilité");
+
+  revalidatePath("/mes-annonces");
+}

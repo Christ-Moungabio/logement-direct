@@ -36,6 +36,8 @@ export async function getOwnerListings(ownerId) {
     visibleFrom: row.visible_from,
     publishedAt: row.published_at,
     updatedAt: row.updated_at,
+    availability: row.availability,
+    availableFrom: row.available_from,
     closeReason: row.close_reason,
     hiddenReason: row.hidden_reason,
   }));
