@@ -91,3 +91,25 @@
     padding: var(--space-lg);
   }
 }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+.danger {
+  color: var(--color-danger);
+}

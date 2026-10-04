@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ImagePlus } from "lucide-react";
 import { createClient } from "../../../lib/supabase/client";
+import { deletePhoto, setPrimaryPhoto } from "../photo-actions";
 import { checkPhoto, MAX_PHOTOS, nextSortOrder, PHOTO_TYPES, PHOTOS_BUCKET } from "../photos";
 import styles from "./PhotoManager.module.css";
 
@@ -84,6 +85,22 @@ export default function PhotoManager({ listingId, photos }) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={photo.url} alt="" className={styles.image} loading="lazy" />
               {photo.isPrimary && <span className={styles.primary}>Principale</span>}
+              <div className={styles.actions}>
+                {!photo.isPrimary && (
+                  <form action={setPrimaryPhoto}>
+                    <input type="hidden" name="photoId" value={photo.id} />
+                    <button type="submit" className={styles.link}>
+                      Mettre en principale
+                    </button>
+                  </form>
+                )}
+                <form action={deletePhoto}>
+                  <input type="hidden" name="photoId" value={photo.id} />
+                  <button type="submit" className={`${styles.link} ${styles.danger}`}>
+                    Supprimer
+                  </button>
+                </form>
+              </div>
             </li>
           ))}
         </ul>
