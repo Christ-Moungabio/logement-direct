@@ -278,6 +278,175 @@
   background: var(--color-neutral-text);
 }
 
+.tableCard {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-canvas);
+}
+
+.tableHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-lg) 20px;
+  border-bottom: 1px solid var(--color-line-soft);
+}
+
+.titleCount {
+  margin-left: var(--space-xs);
+  font-weight: 500;
+  color: var(--color-mute);
+}
+
+.headLink {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+.headLink:hover {
+  color: var(--color-primary-hover);
+}
+
+.tableEmpty {
+  padding: var(--space-xxl) 20px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--color-body);
+}
+
+.tableScroll {
+  position: relative;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.table th {
+  padding: 10px var(--space-sm);
+  font-size: 12.5px;
+  font-weight: 500;
+  text-align: left;
+  color: var(--color-mute);
+}
+.table td {
+  padding: var(--space-md) var(--space-sm);
+  border-top: 1px solid var(--color-line-soft);
+  vertical-align: middle;
+}
+.table th:first-child,
+.table td:first-child {
+  padding-left: 20px;
+}
+.table th:last-child,
+.table td:last-child {
+  padding-right: 20px;
+}
+.table tbody tr:hover {
+  background: var(--color-page);
+}
+
+.listingCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.thumb {
+  display: grid;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.thumbEmpty {
+  background: var(--color-surface-soft);
+  color: var(--color-mute);
+}
+
+.cellStack {
+  display: flex;
+  flex-direction: column;
+}
+
+.cellTitle {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.cellMeta {
+  font-size: 12.5px;
+  color: var(--color-mute);
+}
+
+.cellSoft {
+  color: var(--color-charcoal);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.overdue {
+  white-space: nowrap;
+  color: var(--color-danger);
+}
+
+.actionCell {
+  text-align: right;
+}
+
+.log {
+  padding: var(--space-xs) 20px var(--space-sm);
+  list-style: none;
+}
+
+.logEntry {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 10px;
+  padding: 11px 0;
+}
+.logEntry + .logEntry {
+  border-top: 1px solid var(--color-line-soft);
+}
+
+.logTime {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-mute);
+}
+
+.logText {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--color-charcoal);
+}
+.logText strong {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.logDetail {
+  display: block;
+  font-size: 12.5px;
+  color: var(--color-mute);
+}
+
 @media (max-width: 1100px) {
   .grid {
     grid-template-columns: minmax(0, 1fr);

@@ -186,3 +186,32 @@ export function buildStatusBreakdown(listings, now = new Date()) {
   });
   return { total, rows };
 }
+
+export function timeAgo(iso, now = new Date()) {
+  const minutes = Math.floor((now.getTime() - new Date(iso).getTime()) / 60_000);
+  if (minutes < 1) return "à l'instant";
+  if (minutes < 60) return `il y a ${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `il y a ${hours} h`;
+  return `il y a ${Math.floor(hours / 24)} j`;
+}
+
+export function isOverdue(iso, now = new Date()) {
+  return now.getTime() - new Date(iso).getTime() > 48 * 3_600_000;
+}
+
+const timeFormatter = new Intl.DateTimeFormat("fr-FR", {
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Africa/Brazzaville",
+});
+
+const shortDayFormatter = new Intl.DateTimeFormat("fr-FR", {
+  day: "numeric",
+  month: "short",
+  timeZone: "Africa/Brazzaville",
+});
+
+export function logTime(iso, now = new Date()) {
+  return dayKey(iso) === dayKey(now) ? timeFormatter.format(new Date(iso)) : shortDayFormatter.format(new Date(iso));
+}
