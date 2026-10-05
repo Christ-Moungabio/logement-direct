@@ -42,7 +42,7 @@
 }
 
 .rent {
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .activity {
@@ -55,7 +55,7 @@
   padding: 5px 12px;
   border-radius: var(--radius-full);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
 }
 .success {
@@ -99,7 +99,7 @@
   border-radius: var(--radius-full);
   background: var(--color-canvas);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   transition: background-color var(--dur-fast) var(--ease-out);
 }
 .filter:hover {
@@ -132,7 +132,7 @@
   padding: 0 14px;
   border-radius: var(--radius-full);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   list-style: none;
 }
