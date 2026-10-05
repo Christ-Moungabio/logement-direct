@@ -4,6 +4,7 @@ import Button from "../../components/ui/Button";
 import { requireRole } from "../../src/features/auth/queries";
 import { getOwnerListings } from "../../src/features/listings/queries";
 import RecentListings from "../../src/features/tableau-de-bord/components/RecentListings";
+import Todos from "../../src/features/tableau-de-bord/components/Todos";
 import StatCards from "../../src/features/tableau-de-bord/components/StatCards";
 import styles from "./page.module.css";
 
@@ -33,6 +34,8 @@ export default async function OwnerDashboardPage() {
         </div>
 
         <StatCards listings={listings} />
+
+        <Todos listings={listings} />
         <RecentListings listings={listings} />
       </main>
     </>

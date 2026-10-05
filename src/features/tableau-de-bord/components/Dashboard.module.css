@@ -95,3 +95,31 @@
     padding: var(--space-lg);
   }
 }
+
+.todos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: 0;
+  list-style: none;
+}
+
+.todo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm) var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+}
+
+.danger {
+  background: var(--color-danger-bg);
+}
+.warning {
+  background: var(--color-warning-bg);
+}
+.neutral {
+  background: var(--color-neutral-bg);
+}
