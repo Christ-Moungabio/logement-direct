@@ -2,7 +2,6 @@ import "server-only";
 
 import { capitalize } from "../../../lib/format";
 import { createClient } from "../../lib/supabase/server";
-import { PHOTOS_BUCKET } from "../listing-form/photos";
 import { displayStatus } from "../listings/status";
 
 async function countRows(query) {
