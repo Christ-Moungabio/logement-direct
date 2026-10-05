@@ -26,3 +26,12 @@
   text-align: center;
   color: var(--color-charcoal);
 }
+
+.back {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+.back:hover {
+  text-decoration: underline;
+}

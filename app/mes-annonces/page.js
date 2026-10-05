@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Plus } from "lucide-react";
 import Header from "../../components/Header";
 import Button from "../../components/ui/Button";
@@ -22,6 +23,9 @@ export default async function MyListingsPage({ searchParams }) {
     <>
       <Header />
       <main className={`container ${styles.page}`}>
+        <Link href="/espace" className={styles.back}>
+          ← Mon espace
+        </Link>
         <div className={styles.head}>
           <div>
             <h1 className="text-display-lg">Mes annonces</h1>
