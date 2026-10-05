@@ -19,6 +19,30 @@
   border-top: 0;
 }
 
+.content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.thumb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 52px;
+  height: 52px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  color: var(--color-mute);
+}
+
+.thumbImage {
+  object-fit: cover;
+}
+
 .main {
   display: flex;
   flex-direction: column;

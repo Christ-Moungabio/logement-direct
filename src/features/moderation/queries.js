@@ -83,7 +83,10 @@ export async function getReports(status) {
     .select(
       `
       id, reason, comment, status, created_at, handled_at, listing_id,
-      listing:listings ( id, status, visible_from, property_types ( name ), neighborhoods ( name ) ),
+      listing:listings (
+        id, status, visible_from, property_types ( name ), neighborhoods ( name ),
+        listing_photos ( storage_path, is_primary, sort_order )
+      ),
       reporter:profiles!reporter_id ( full_name ),
       handler:profiles!handled_by ( full_name )
     `,
@@ -115,7 +118,12 @@ export async function getReports(status) {
     reporterName: row.reporter?.full_name ?? null,
     handlerName: row.handler?.full_name ?? null,
     listing: row.listing
-      ? { id: row.listing.id, title: listingTitle(row.listing), status: displayStatus(row.listing) }
+      ? {
+          id: row.listing.id,
+          title: listingTitle(row.listing),
+          status: displayStatus(row.listing),
+          photoUrl: primaryPhotoUrl(supabase, row.listing.listing_photos),
+        }
       : null,
     reportsOnListing: perListing.get(row.listing_id) ?? 0,
   }));
