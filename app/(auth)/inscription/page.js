@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import AuthLayout from "../../../src/features/auth/components/AuthLayout";
 import SignupForm from "../../../src/features/auth/components/SignupForm";
-import { homeForRole, safeNextPath } from "../../../src/features/auth/navigation";
+import { destinationForRole, safeNextPath } from "../../../src/features/auth/navigation";
 import { getCurrentProfile } from "../../../src/features/auth/queries";
 
 export const metadata = {
@@ -17,7 +17,7 @@ export default async function InscriptionPage({ searchParams }) {
   const safeNext = safeNextPath(next);
 
   const profile = await getCurrentProfile();
-  if (profile) redirect(safeNext ?? homeForRole(profile.role));
+  if (profile) redirect(destinationForRole(safeNext, profile.role));
 
   return (
     <AuthLayout

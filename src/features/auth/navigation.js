@@ -26,18 +26,33 @@ export function spaceLinkForRole(role) {
   return { href, label: SPACE_LABELS[role] };
 }
 
-const PROTECTED_PREFIXES = ["/espace", "/mes-annonces", "/admin"];
+const ROLE_BY_PREFIX = {
+  "/espace": "owner",
+  "/mes-annonces": "owner",
+  "/admin": "admin",
+};
 
-export function isProtectedPath(pathname) {
-  return PROTECTED_PREFIXES.some(
+function protectedPrefix(pathname) {
+  return Object.keys(ROLE_BY_PREFIX).find(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
+}
+
+export function isProtectedPath(pathname) {
+  return Boolean(protectedPrefix(pathname));
 }
 
 export function safeNextPath(value) {
   if (typeof value !== "string" || !value.startsWith("/")) return null;
   if (value.startsWith("//") || value.startsWith("/\\")) return null;
   return value;
+}
+
+export function destinationForRole(next, role) {
+  const safe = safeNextPath(next);
+  if (!safe) return homeForRole(role);
+  const prefix = protectedPrefix(safe.split(/[?#]/)[0]);
+  return prefix && ROLE_BY_PREFIX[prefix] !== role ? homeForRole(role) : safe;
 }
 
 export function loginPath(next) {
