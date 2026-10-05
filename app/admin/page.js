@@ -2,14 +2,20 @@ import Link from "next/link";
 import { capitalize } from "../../lib/format";
 import { requireRole } from "../../src/features/auth/queries";
 import AdminPageHeader from "../../src/features/moderation/components/AdminPageHeader";
+import Breakdown from "../../src/features/moderation/components/Breakdown";
 import CreatedChart from "../../src/features/moderation/components/CreatedChart";
 import KpiStrip from "../../src/features/moderation/components/KpiStrip";
 import ModerationLog from "../../src/features/moderation/components/ModerationLog";
 import PendingReportsTable from "../../src/features/moderation/components/PendingReportsTable";
+import RecentListingsTable from "../../src/features/moderation/components/RecentListingsTable";
 import StatusBreakdown from "../../src/features/moderation/components/StatusBreakdown";
 import shell from "../../src/features/moderation/components/AdminShell.module.css";
 import dashboard from "../../src/features/moderation/components/Dashboard.module.css";
 import {
+  BREAKDOWNS,
+  PERIODS,
+  breakdownFromParam,
+  buildBreakdown,
   buildCreatedChart,
   buildKpis,
   buildStatusBreakdown,
@@ -19,6 +25,7 @@ import {
   getDashboardData,
   getModerationLog,
   getPendingReportsPreview,
+  getRecentListings,
 } from "../../src/features/moderation/queries";
 
 export const metadata = { title: "Administration" };
@@ -31,16 +38,35 @@ const todayFormatter = new Intl.DateTimeFormat("fr-FR", {
   timeZone: "Africa/Brazzaville",
 });
 
+function dashboardHref(params) {
+  const query = new URLSearchParams(Object.entries(params).filter(([, value]) => value));
+  return query.size > 0 ? `/admin?${query}` : "/admin";
+}
+
 export default async function AdminHomePage({ searchParams }) {
   await requireRole("admin", "/admin");
-  const { periode } = await searchParams;
+  const { periode, repartition } = await searchParams;
   const period = periodFromParam(periode);
-  const [data, pendingReports, log] = await Promise.all([
+  const view = breakdownFromParam(repartition);
+
+  const [data, pendingReports, log, recentListings] = await Promise.all([
     getDashboardData(),
     getPendingReportsPreview(),
     getModerationLog(),
+    getRecentListings(),
   ]);
   const pending = data.pendingReports.length;
+
+  const periods = Object.entries(PERIODS).map(([value, { label, param }]) => ({
+    value,
+    label,
+    href: dashboardHref({ periode: param, repartition: BREAKDOWNS[view].param }),
+  }));
+  const views = Object.entries(BREAKDOWNS).map(([value, { label, param }]) => ({
+    value,
+    label,
+    href: dashboardHref({ periode: PERIODS[period].param, repartition: param }),
+  }));
 
   return (
     <>
@@ -57,10 +83,12 @@ export default async function AdminHomePage({ searchParams }) {
       <KpiStrip kpis={buildKpis(data)} />
 
       <div className={dashboard.grid}>
-        <CreatedChart chart={buildCreatedChart(data.listings, period)} period={period} />
+        <CreatedChart chart={buildCreatedChart(data.listings, period)} periods={periods} current={period} />
         <StatusBreakdown breakdown={buildStatusBreakdown(data.listings)} />
         <PendingReportsTable reports={pendingReports} total={pending} />
         <ModerationLog entries={log} />
+        <RecentListingsTable listings={recentListings} />
+        <Breakdown breakdown={buildBreakdown(data, view)} views={views} current={view} />
       </div>
     </>
   );

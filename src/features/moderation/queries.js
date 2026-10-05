@@ -216,7 +216,7 @@ export async function getDashboardData() {
       .select("id, status, visible_from, created_at, neighborhoods ( name )")
       .order("created_at", { ascending: false })
       .limit(1000),
-    supabase.from("reports").select("id, created_at").eq("status", "pending"),
+    supabase.from("reports").select("id, status, reason, created_at").limit(1000),
     supabase.from("profiles").select("created_at").gte("created_at", accountsSince),
     countRole("tenant"),
     countRole("owner"),
@@ -235,7 +235,10 @@ export async function getDashboardData() {
       createdAt: row.created_at,
       neighborhood: row.neighborhoods?.name ?? null,
     })),
-    pendingReports: reportsResult.data.map((row) => ({ id: row.id, createdAt: row.created_at })),
+    pendingReports: reportsResult.data
+      .filter((row) => row.status === "pending")
+      .map((row) => ({ id: row.id, createdAt: row.created_at })),
+    reportReasons: reportsResult.data.map((row) => row.reason),
     accounts: {
       total: tenants + owners + admins,
       tenants,
@@ -326,4 +329,33 @@ export async function getModerationLog(limit = 5) {
       listingTitle: row.listing ? listingTitle(row.listing) : null,
       hiddenReason: row.listing?.hidden_reason ?? null,
     }));
+}
+
+export async function getRecentListings(limit = 5) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("listings")
+    .select(
+      `
+      id, status, visible_from, published_at, monthly_rent,
+      property_types ( name ), neighborhoods ( name ),
+      owner:profiles ( full_name )
+    `,
+    )
+    .not("published_at", "is", null)
+    .order("published_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw new Error(`Impossible de charger les dernières annonces : ${error.message}`);
+
+  return data.map((row) => ({
+    id: row.id,
+    status: displayStatus(row),
+    title: listingTitle(row),
+    neighborhood: row.neighborhoods?.name ?? null,
+    publishedAt: row.published_at,
+    visibleFrom: row.visible_from,
+    rent: row.monthly_rent,
+    ownerName: row.owner?.full_name ?? null,
+  }));
 }

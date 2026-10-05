@@ -1,3 +1,4 @@
+import { REPORT_REASON_LABELS } from "../annonces/labels";
 import { displayStatus } from "../listings/status";
 
 const DAY = 86_400_000;
@@ -214,4 +215,60 @@ const shortDayFormatter = new Intl.DateTimeFormat("fr-FR", {
 
 export function logTime(iso, now = new Date()) {
   return dayKey(iso) === dayKey(now) ? timeFormatter.format(new Date(iso)) : shortDayFormatter.format(new Date(iso));
+}
+
+export const BREAKDOWNS = {
+  areas: { label: "Quartiers", param: null },
+  reasons: { label: "Motifs", param: "motifs" },
+};
+
+export function breakdownFromParam(param) {
+  const match = Object.entries(BREAKDOWNS).find(([, view]) => view.param === param);
+  return match ? match[0] : "areas";
+}
+
+function withWidths(rows) {
+  const max = Math.max(1, ...rows.map((row) => row.count));
+  return rows.map((row) => ({ ...row, width: `${Math.round((row.count / max) * 100)}%` }));
+}
+
+export function buildBreakdown({ listings, reportReasons }, view, now = new Date()) {
+  if (view === "reasons") {
+    return {
+      caption: `${reportReasons.length} signalement${reportReasons.length > 1 ? "s" : ""} reçu${reportReasons.length > 1 ? "s" : ""} au total`,
+      empty: "Aucun signalement reçu pour le moment.",
+      rows: withWidths(
+        Object.entries(REPORT_REASON_LABELS).map(([reason, label]) => ({
+          key: reason,
+          label,
+          count: reportReasons.filter((item) => item === reason).length,
+        })),
+      ),
+      total: reportReasons.length,
+    };
+  }
+
+  const live = listings.filter((listing) => isLive(listing, now));
+  const counts = new Map();
+  live.forEach((listing) => {
+    const area = listing.neighborhood ?? "Quartier non renseigné";
+    counts.set(area, (counts.get(area) ?? 0) + 1);
+  });
+  const sorted = [...counts.entries()]
+    .map(([label, count]) => ({ key: label, label, count }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, "fr"));
+  const rows =
+    sorted.length > 6
+      ? [
+          ...sorted.slice(0, 5),
+          { key: "others", label: "Autres quartiers", count: sorted.slice(5).reduce((sum, row) => sum + row.count, 0) },
+        ]
+      : sorted;
+
+  return {
+    caption: `${live.length} annonce${live.length > 1 ? "s" : ""} en ligne`,
+    empty: "Aucune annonce en ligne pour le moment.",
+    rows: withWidths(rows),
+    total: live.length,
+  };
 }
