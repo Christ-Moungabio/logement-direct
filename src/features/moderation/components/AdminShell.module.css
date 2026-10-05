@@ -1,0 +1,346 @@
+.sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  height: 100dvh;
+  flex-direction: column;
+  gap: 22px;
+  padding: var(--space-lg) var(--space-md);
+  border-right: 1px solid var(--color-line);
+  background: var(--color-canvas);
+}
+
+.brand {
+  display: flex;
+  height: 40px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 var(--space-sm);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.brandTag {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--color-hover);
+  color: var(--color-charcoal);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+}
+
+.groupLabel {
+  margin-bottom: 6px;
+  padding: 0 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-mute);
+}
+
+.navLink {
+  display: flex;
+  height: 36px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-charcoal);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+.navLink:hover {
+  background: var(--color-hover);
+}
+
+.navActive,
+.navActive:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.navLabel {
+  flex: 1;
+}
+
+.count {
+  display: inline-flex;
+  min-width: 22px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--color-hover);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-body);
+}
+
+.countUrgent {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding: 10px var(--space-sm) 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-dark);
+  color: var(--color-on-dark);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.accountText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.accountName {
+  overflow: hidden;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accountRole {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-mute);
+}
+
+.iconButton {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-charcoal);
+  cursor: pointer;
+}
+.iconButton:hover {
+  background: var(--color-hover);
+  color: var(--color-ink);
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: 0 var(--space-xxl);
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-canvas);
+}
+
+.breadcrumb {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-mute);
+}
+.breadcrumb li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  white-space: nowrap;
+}
+.breadcrumb a:hover {
+  color: var(--color-ink);
+}
+
+.breadcrumbCurrent {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.search {
+  position: relative;
+  width: min(340px, 50%);
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  color: var(--color-mute);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px 0 36px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-page);
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--color-ink);
+}
+.searchInput::placeholder {
+  color: var(--color-mute);
+}
+.searchInput:focus-visible {
+  border-color: var(--color-primary);
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 0;
+}
+
+.pageHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.pageDescription {
+  max-width: 68ch;
+  margin-top: var(--space-xs);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-body);
+}
+
+.pageActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm) var(--space-lg);
+    padding: var(--space-md) var(--space-lg);
+    border-right: 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .group {
+    order: 3;
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .groupLabel,
+  .siteGroup,
+  .accountText {
+    display: none;
+  }
+
+  .navLink {
+    flex: none;
+  }
+
+  .account {
+    margin: 0 0 0 auto;
+    padding: 0;
+    border-top: 0;
+  }
+
+  .topbar {
+    position: static;
+    padding: 0 var(--space-lg);
+  }
+
+  .breadcrumb {
+    display: none;
+  }
+
+  .search {
+    width: 100%;
+  }
+}
+
+.button {
+  display: inline-flex;
+  height: 36px;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0 14px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-canvas);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-ink);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+.button:hover {
+  background: var(--color-hover);
+}
+
+.buttonSmall {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.buttonPrimary {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.buttonPrimary:hover {
+  background: var(--color-primary-hover);
+  color: var(--color-on-primary);
+}
+
+.buttonCount {
+  padding: 1px 7px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+}
