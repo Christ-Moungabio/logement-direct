@@ -122,6 +122,89 @@ export async function getReports(status) {
   }));
 }
 
+const PHOTOS_BUCKET = "listing-photos";
+
+export async function getReport(id) {
+  const supabase = await createClient();
+
+  const { data: report, error } = await supabase
+    .from("reports")
+    .select(
+      `
+      id, reason, comment, status, created_at, handled_at, listing_id,
+      reporter:profiles!reporter_id ( full_name ),
+      handler:profiles!handled_by ( full_name ),
+      listing:listings (
+        id, status, visible_from, monthly_rent, advance_months, description, published_at, hidden_reason,
+        property_types ( name ),
+        cities ( name ),
+        neighborhoods ( name ),
+        owner:profiles ( full_name, whatsapp_number ),
+        listing_photos ( storage_path, is_primary, sort_order )
+      )
+    `,
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw new Error(`Impossible de charger le signalement : ${error.message}`);
+  if (!report) return null;
+
+  let others = [];
+  if (report.listing_id) {
+    const { data, error: othersError } = await supabase
+      .from("reports")
+      .select("id, reason, comment, status, created_at, reporter:profiles!reporter_id ( full_name )")
+      .eq("listing_id", report.listing_id)
+      .neq("id", report.id)
+      .order("created_at", { ascending: false });
+    if (othersError) throw new Error(`Impossible de charger les autres signalements : ${othersError.message}`);
+    others = data;
+  }
+
+  const listing = report.listing;
+  const photo = listing?.listing_photos
+    ?.toSorted((a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order)
+    .at(0);
+
+  return {
+    id: report.id,
+    reason: report.reason,
+    comment: report.comment,
+    status: report.status,
+    createdAt: report.created_at,
+    handledAt: report.handled_at,
+    reporterName: report.reporter?.full_name ?? null,
+    handlerName: report.handler?.full_name ?? null,
+    listing: listing
+      ? {
+          id: listing.id,
+          title: listingTitle(listing),
+          status: displayStatus(listing),
+          city: listing.cities?.name ?? null,
+          rent: listing.monthly_rent,
+          advanceMonths: listing.advance_months,
+          description: listing.description,
+          publishedAt: listing.published_at,
+          hiddenReason: listing.hidden_reason,
+          ownerName: listing.owner?.full_name ?? null,
+          ownerPhone: listing.owner?.whatsapp_number ?? null,
+          photoUrl: photo
+            ? supabase.storage.from(PHOTOS_BUCKET).getPublicUrl(photo.storage_path).data.publicUrl
+            : null,
+        }
+      : null,
+    otherReports: others.map((other) => ({
+      id: other.id,
+      reason: other.reason,
+      comment: other.comment,
+      status: other.status,
+      createdAt: other.created_at,
+      reporterName: other.reporter?.full_name ?? null,
+    })),
+  };
+}
+
 export async function getDashboardData() {
   const supabase = await createClient();
   const accountsSince = new Date(Date.now() - 15 * 86_400_000).toISOString();
