@@ -1,13 +1,13 @@
 .back {
   align-self: flex-start;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-link);
 }
 
 .reason {
   margin-bottom: var(--space-xs);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--color-danger);
@@ -93,7 +93,7 @@
 }
 
 .hidden {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-danger);
   overflow-wrap: anywhere;
 }
@@ -129,7 +129,7 @@
 }
 
 .otherReason {
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-link);
 }
 

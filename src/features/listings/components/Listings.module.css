@@ -42,7 +42,7 @@
 }
 
 .rent {
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .activity {
@@ -55,7 +55,7 @@
   padding: 5px 12px;
   border-radius: var(--radius-full);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
 }
 .success {
@@ -99,7 +99,7 @@
   border-radius: var(--radius-full);
   background: var(--color-canvas);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   transition: background-color var(--dur-fast) var(--ease-out);
 }
 .filter:hover {
@@ -132,7 +132,7 @@
   padding: 0 14px;
   border-radius: var(--radius-full);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   list-style: none;
 }
@@ -181,4 +181,41 @@
     right: auto;
     left: 0;
   }
+}
+
+.availabilitySummary {
+  display: inline-block;
+  margin-top: var(--space-xs);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-primary);
+  cursor: pointer;
+  list-style: none;
+}
+.availabilitySummary::-webkit-details-marker {
+  display: none;
+}
+.availabilitySummary:hover {
+  text-decoration: underline;
+}
+
+.radio {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.formError {
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-danger);
+}
+
+.formSaved {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-success);
 }

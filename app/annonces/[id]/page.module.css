@@ -17,7 +17,7 @@
   margin-bottom: var(--space-lg);
   color: var(--color-body);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 550;
   list-style: none;
 }
 .breadcrumb a:hover {

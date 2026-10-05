@@ -2,6 +2,7 @@ import { ImageIcon } from "lucide-react";
 import { formatPrice, formatShortDate } from "../../../../lib/format";
 import { CLOSE_REASONS } from "../status";
 import { listingTitle, missingFields } from "../summary";
+import AvailabilityControl from "./AvailabilityControl";
 import RowActions from "./RowActions";
 import StatusBadge from "./StatusBadge";
 import styles from "./Listings.module.css";
@@ -53,7 +54,12 @@ export default function ListingsList({ listings }) {
           <div>
             <StatusBadge status={listing.status} />
           </div>
-          <p className={`${styles.activity} text-body-sm`}>{activity(listing)}</p>
+          <div className={styles.activity}>
+            <p className="text-body-sm">{activity(listing)}</p>
+            {(listing.status === "published" || listing.status === "scheduled") && (
+              <AvailabilityControl listing={listing} />
+            )}
+          </div>
           <RowActions listing={listing} />
         </li>
       ))}
