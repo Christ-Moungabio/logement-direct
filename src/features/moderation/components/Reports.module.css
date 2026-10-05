@@ -65,6 +65,24 @@
   color: var(--color-body);
 }
 
+@media (max-width: 860px) {
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    background: none;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+  .report,
+  .report:first-child {
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    background: var(--color-canvas);
+  }
+}
+
 @media (max-width: 640px) {
   .report {
     flex-direction: column;
