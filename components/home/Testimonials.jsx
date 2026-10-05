@@ -4,39 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import taxis from "../../public/images/brazzaville-taxis.jpg";
+import { TESTIMONIALS } from "./testimonials-data";
 import styles from "./Testimonials.module.css";
-
-const TESTIMONIALS = [
-  {
-    quote:
-      "J'ai trouvé mon studio à Moungali sans payer de démarcheur. J'ai écrit au propriétaire sur WhatsApp le soir, la visite était calée le lendemain.",
-    name: "Merveille M.",
-    role: "Locataire, Brazzaville",
-    rating: 5,
-  },
-  {
-    quote:
-      "J'ai publié mon appartement avec six photos, il était en ligne quelques minutes après. Ceux qui m'appellent connaissent déjà le loyer et l'avance.",
-    name: "Arsène K.",
-    role: "Propriétaire, Brazzaville",
-    rating: 5,
-  },
-  {
-    quote:
-      "J'ai comparé les quartiers et les prix avant de me déplacer. Deux visites au lieu de dix, et le logement ressemblait aux photos.",
-    name: "Grâce L.",
-    role: "Locataire, Brazzaville",
-    rating: 4,
-  },
-];
-
-function initials(name) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2);
-}
 
 export default function Testimonials() {
   const [index, setIndex] = useState(0);
@@ -62,9 +31,7 @@ export default function Testimonials() {
         </span>
         <blockquote className={styles.quote}>« {current.quote} »</blockquote>
         <figcaption className={styles.author}>
-          <span className={styles.avatar} aria-hidden="true">
-            {initials(current.name)}
-          </span>
+          <Image src={current.photo} alt="" width={46} height={46} className={styles.avatar} />
           <span>
             <strong>{current.name}</strong>
             <span className={styles.role}>{current.role}</span>
