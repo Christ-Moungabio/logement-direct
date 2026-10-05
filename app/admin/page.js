@@ -1,15 +1,24 @@
 import Link from "next/link";
 import { EyeOff, Flag, House } from "lucide-react";
+import { capitalize } from "../../lib/format";
 import { requireRole } from "../../src/features/auth/queries";
+import AdminPageHeader from "../../src/features/moderation/components/AdminPageHeader";
 import { getModerationCounts } from "../../src/features/moderation/queries";
 import styles from "./page.module.css";
 
 export const metadata = { title: "Administration" };
 
+const todayFormatter = new Intl.DateTimeFormat("fr-FR", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "Africa/Brazzaville",
+});
+
 export default async function AdminHomePage() {
-  const profile = await requireRole("admin", "/admin");
+  await requireRole("admin", "/admin");
   const counts = await getModerationCounts();
-  const firstName = profile.full_name.split(" ")[0];
 
   const stats = [
     {
@@ -25,13 +34,7 @@ export default async function AdminHomePage() {
 
   return (
     <>
-      <div>
-        <h1 className="text-display-lg">Administration</h1>
-        <p className={`${styles.intro} text-body-md`}>
-          Bonjour {firstName}. Les annonces sont publiées sans validation : ici, vous suivez les signalements des
-          locataires et les annonces masquées.
-        </p>
-      </div>
+      <AdminPageHeader title="Vue d'ensemble" description={capitalize(todayFormatter.format(new Date()))} />
 
       <ul className={styles.stats}>
         {stats.map(({ label, value, icon: Icon, urgent, href }) => {
