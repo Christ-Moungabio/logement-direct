@@ -447,6 +447,125 @@
   color: var(--color-mute);
 }
 
+.tableCardOpen {
+  overflow: visible;
+}
+
+.tableScrollMobile {
+  overflow-x: visible;
+}
+
+.table .alignRight {
+  text-align: right;
+}
+
+.cellStrong {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+}
+
+.textActions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-xs);
+}
+
+.textAction {
+  display: inline-flex;
+  height: 30px;
+  align-items: center;
+  padding: 0 var(--space-sm);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  cursor: pointer;
+  list-style: none;
+}
+.textAction::-webkit-details-marker {
+  display: none;
+}
+.textAction:hover {
+  background: var(--color-hover);
+  color: var(--color-ink);
+}
+
+.textActionDanger,
+.textActionDanger:hover {
+  color: var(--color-danger);
+}
+
+.textActionPrimary,
+.textActionPrimary:hover {
+  color: var(--color-primary);
+}
+
+.cardCaption {
+  margin-top: var(--space-xs);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-body);
+}
+
+.cardEmpty {
+  padding: var(--space-xl) 0;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--color-body);
+}
+
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  list-style: none;
+}
+
+.breakdownLine {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.breakdownCount {
+  font-weight: 600;
+}
+
+.breakdownTrack {
+  display: block;
+  height: 6px;
+  margin-top: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--color-line-soft);
+}
+
+.breakdownFill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--color-primary);
+}
+
 @media (max-width: 1100px) {
   .grid {
     grid-template-columns: minmax(0, 1fr);
@@ -454,5 +573,15 @@
 
   .wide {
     grid-column: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .tableCardOpen {
+    overflow: hidden;
+  }
+
+  .tableScrollMobile {
+    overflow-x: auto;
   }
 }

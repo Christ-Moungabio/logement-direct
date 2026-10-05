@@ -1,12 +1,7 @@
 import Link from "next/link";
-import { PERIODS } from "../dashboard";
 import styles from "./Dashboard.module.css";
 
-function periodHref(param) {
-  return param ? `/admin?periode=${param}` : "/admin";
-}
-
-export default function CreatedChart({ chart, period }) {
+export default function CreatedChart({ chart, periods, current }) {
   const last = chart.bars[chart.bars.length - 1];
 
   return (
@@ -21,15 +16,15 @@ export default function CreatedChart({ chart, period }) {
           </p>
         </div>
         <nav aria-label="Période" className={styles.segmented}>
-          {Object.entries(PERIODS).map(([value, { label, param }]) => (
+          {periods.map((item) => (
             <Link
-              key={value}
-              href={periodHref(param)}
+              key={item.value}
+              href={item.href}
               scroll={false}
-              className={`${styles.segment} ${value === period ? styles.segmentActive : ""}`}
-              aria-current={value === period ? "true" : undefined}
+              className={`${styles.segment} ${item.value === current ? styles.segmentActive : ""}`}
+              aria-current={item.value === current ? "true" : undefined}
             >
-              {label}
+              {item.label}
             </Link>
           ))}
         </nav>
