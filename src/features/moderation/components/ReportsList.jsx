@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Button from "../../../../components/ui/Button";
 import { formatAge, formatShortDate } from "../../../../lib/format";
 import { REPORT_REASON_LABELS } from "../../annonces/labels";
@@ -31,7 +32,9 @@ export default function ReportsList({ reports }) {
       {reports.map((report) => (
         <li key={report.id} className={styles.report}>
           <div className={styles.main}>
-            <p className={styles.reason}>{REPORT_REASON_LABELS[report.reason]}</p>
+            <Link href={`/admin/signalements/${report.id}`} className={styles.reason}>
+              {REPORT_REASON_LABELS[report.reason]}
+            </Link>
             <ListingLine listing={report.listing} reportsOnListing={report.reportsOnListing} />
             {report.comment && <blockquote className={styles.comment}>« {report.comment} »</blockquote>}
             <p className={`${styles.meta} text-caption-sm`}>
@@ -46,11 +49,13 @@ export default function ReportsList({ reports }) {
             </p>
           </div>
 
-          {report.listing?.status === "published" && (
-            <Button href={`/annonces/${report.listing.id}`} size="sm" variant="secondary">
-              Voir l&apos;annonce
-            </Button>
-          )}
+          <Button
+            href={`/admin/signalements/${report.id}`}
+            size="sm"
+            variant={report.status === "pending" ? "primary" : "secondary"}
+          >
+            {report.status === "pending" ? "Traiter" : "Voir"}
+          </Button>
         </li>
       ))}
     </ul>
