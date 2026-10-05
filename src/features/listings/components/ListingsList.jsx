@@ -1,32 +1,15 @@
 import { ImageIcon } from "lucide-react";
 import { formatPrice, formatShortDate } from "../../../../lib/format";
 import { CLOSE_REASONS } from "../status";
+import { listingTitle, missingFields } from "../summary";
 import AvailabilityControl from "./AvailabilityControl";
 import RowActions from "./RowActions";
 import StatusBadge from "./StatusBadge";
 import styles from "./Listings.module.css";
 
-function capitalize(text) {
-  return text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
-}
-
-function listingTitle(listing) {
-  const type = capitalize(listing.propertyType) || "Logement";
-  return listing.neighborhood ? `${type} à ${listing.neighborhood}` : type;
-}
-
 function photoLabel(count) {
   if (count === 0) return "0 photo";
   return `${count} photo${count > 1 ? "s" : ""}`;
-}
-
-function missingFields(listing) {
-  const missing = [];
-  if (listing.photoCount === 0) missing.push("photos");
-  if (!listing.hasDescription) missing.push("description");
-  if (!listing.rent) missing.push("loyer");
-  if (!listing.neighborhood) missing.push("quartier");
-  return missing;
 }
 
 function activity(listing) {
