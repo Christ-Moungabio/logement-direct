@@ -1,18 +1,24 @@
-import Header from "../../components/Header";
 import { requireRole } from "../../src/features/auth/queries";
-import AdminNav from "../../src/features/moderation/components/AdminNav";
+import AdminSidebar from "../../src/features/moderation/components/AdminSidebar";
+import AdminTopbar from "../../src/features/moderation/components/AdminTopbar";
+import { getModerationCounts } from "../../src/features/moderation/queries";
 import styles from "./layout.module.css";
 
 export default async function AdminLayout({ children }) {
-  await requireRole("admin", "/admin");
+  const profile = await requireRole("admin", "/admin");
+  const counts = await getModerationCounts();
 
   return (
-    <>
-      <Header />
-      <div className={`container ${styles.shell}`}>
-        <AdminNav />
+    <div className={styles.app}>
+      <AdminSidebar
+        name={profile.full_name}
+        pendingReports={counts.pendingReports}
+        listingsCount={counts.liveListings + counts.hiddenListings}
+      />
+      <div className={styles.content}>
+        <AdminTopbar />
         <main className={styles.main}>{children}</main>
       </div>
-    </>
+    </div>
   );
 }
