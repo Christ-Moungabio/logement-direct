@@ -17,7 +17,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr" className={jakarta.variable}>
+    <html lang="fr" className={jakarta.variable} data-scroll-behavior="smooth">
       <body>{children}</body>
     </html>
   );
