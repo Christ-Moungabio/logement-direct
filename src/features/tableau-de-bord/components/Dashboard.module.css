@@ -1,0 +1,125 @@
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-md);
+  margin: 0;
+  list-style: none;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-lg);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  background: var(--color-canvas);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+.stat:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.statEmpty {
+  background: transparent;
+}
+.statEmpty .statCount {
+  color: var(--color-mute);
+}
+
+.statCount {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-charcoal);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  background: var(--color-canvas);
+}
+
+.cardHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+.link {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+.recent {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  list-style: none;
+}
+
+.recentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding-block: var(--space-md);
+  border-top: 1px solid var(--color-hairline);
+}
+.recentRow:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+@media (max-width: 560px) {
+  .card {
+    padding: var(--space-lg);
+  }
+}
+
+.todos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: 0;
+  list-style: none;
+}
+
+.todo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm) var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+}
+
+.danger {
+  background: var(--color-danger-bg);
+}
+.warning {
+  background: var(--color-warning-bg);
+}
+.neutral {
+  background: var(--color-neutral-bg);
+}

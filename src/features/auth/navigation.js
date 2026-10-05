@@ -5,7 +5,7 @@ export const ROLE_LABELS = {
 };
 
 const HOME_BY_ROLE = {
-  owner: "/mes-annonces",
+  owner: "/espace",
   tenant: "/recherche",
   admin: "/admin",
 };
@@ -15,7 +15,7 @@ export function homeForRole(role) {
 }
 
 const SPACE_LABELS = {
-  owner: "Mes annonces",
+  owner: "Mon espace",
   tenant: "Rechercher",
   admin: "Administration",
 };
@@ -26,7 +26,7 @@ export function spaceLinkForRole(role) {
   return { href, label: SPACE_LABELS[role] };
 }
 
-const PROTECTED_PREFIXES = ["/mes-annonces", "/admin"];
+const PROTECTED_PREFIXES = ["/espace", "/mes-annonces", "/admin"];
 
 export function isProtectedPath(pathname) {
   return PROTECTED_PREFIXES.some(

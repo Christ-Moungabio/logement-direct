@@ -33,21 +33,21 @@
 .heroTitle {
   font-family: var(--font-display);
   font-size: clamp(40px, 5vw, 72px);
-  font-weight: 600;
+  font-weight: 550;
   line-height: 1.04;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.03em;
   color: var(--color-on-dark);
 }
 .heroTitle strong {
   display: block;
-  font-weight: 900;
+  font-weight: 700;
   color: var(--color-primary-bright);
 }
 .heroLead {
   max-width: 50ch;
   margin-top: 14px;
   font-size: 17.5px;
-  font-weight: 600;
+  font-weight: 550;
   line-height: 1.55;
   color: var(--color-on-dark-mute);
 }
@@ -75,7 +75,7 @@
 
 .searchLabel {
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-charcoal);
 }
 
@@ -87,7 +87,7 @@
   border-radius: var(--radius-full);
   background-color: var(--color-canvas);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 550;
   transition:
     border-color var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-fast) var(--ease-out);
@@ -127,7 +127,7 @@ select.searchInput {
   background: var(--color-primary);
   color: var(--color-on-primary);
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
   transition:
     background-color var(--dur-fast) var(--ease-out),
     transform var(--dur-fast) var(--ease-out);
@@ -160,7 +160,7 @@ select.searchInput {
 .sectionAside {
   max-width: 380px;
   font-size: 15.5px;
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.55;
   color: var(--color-body);
 }
@@ -179,14 +179,14 @@ select.searchInput {
 }
 .aboutText {
   font-size: 15.5px;
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.55;
   color: var(--color-body);
 }
 .aboutStatement {
   font-size: clamp(30px, 3.7vw, 52px);
   line-height: 1.08;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
 }
 
 .stats {
@@ -207,12 +207,12 @@ select.searchInput {
   font-size: clamp(36px, 3.6vw, 50px);
   font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
 }
 .statLabel {
   max-width: 24ch;
   font-size: 14.5px;
-  font-weight: 600;
+  font-weight: 550;
   line-height: 1.45;
   color: var(--color-body);
 }
@@ -252,7 +252,7 @@ select.searchInput {
 }
 .featureText {
   font-size: 15px;
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.55;
   color: var(--color-body);
 }
@@ -289,7 +289,7 @@ select.searchInput {
 .howAside {
   max-width: 380px;
   font-size: 15.5px;
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.55;
   color: var(--color-on-dark-mute);
 }
@@ -320,11 +320,11 @@ select.searchInput {
   font-size: 44px;
   font-weight: 300;
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 .stepText {
   font-size: 15px;
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.55;
   color: var(--color-on-dark-mute);
 }
@@ -337,12 +337,12 @@ select.searchInput {
 .reviewsAside strong {
   display: block;
   font-size: 15px;
-  font-weight: 850;
+  font-weight: 700;
 }
 .reviewsAside p span {
   display: block;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 550;
   color: var(--color-body);
 }
 .avatars {
@@ -359,7 +359,7 @@ select.searchInput {
   background: var(--color-primary-soft);
   color: var(--color-primary);
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 700;
 }
 .avatar + .avatar {
   margin-left: -12px;
@@ -392,7 +392,7 @@ select.searchInput {
   padding: 22px 0;
   font-family: var(--font-display);
   font-size: 19px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.35;
   cursor: pointer;
   list-style: none;
@@ -442,7 +442,7 @@ select.searchInput {
   max-width: 62ch;
   padding: 0 54px 24px 0;
   font-size: 16px;
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.6;
   color: var(--color-body);
 }
@@ -482,7 +482,7 @@ select.searchInput {
 .finalText {
   max-width: 36em;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 550;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.88);
 }
@@ -497,7 +497,7 @@ select.searchInput {
   background: var(--color-primary);
   color: var(--color-on-primary);
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
   transition:
     background-color var(--dur-fast) var(--ease-out),
     transform var(--dur-fast) var(--ease-out);
@@ -513,7 +513,7 @@ select.searchInput {
   right: 20px;
   bottom: 16px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: rgba(255, 255, 255, 0.82);
 }
 

@@ -20,7 +20,7 @@
   margin-top: var(--space-sm);
   color: var(--color-body);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 550;
 }
 
 .price {
@@ -39,7 +39,7 @@
   background: var(--color-success-bg);
   color: var(--color-success);
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
 }
 .badge[data-soon] {
   background: var(--color-warning-bg);
@@ -48,24 +48,24 @@
 
 .rent {
   font-size: 18px;
-  font-weight: 650;
+  font-weight: 600;
   color: var(--color-body);
 }
 .rent strong {
   font-family: var(--font-display);
   font-size: clamp(30px, 4vw, 40px);
-  font-weight: 850;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--color-ink);
 }
 
 .advance {
   font-size: 17px;
-  font-weight: 600;
+  font-weight: 550;
   color: var(--color-charcoal);
 }
 .advance strong {
-  font-weight: 850;
+  font-weight: 700;
   color: var(--color-ink);
 }
 
@@ -89,12 +89,12 @@
 }
 .fact dt {
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 600;
   color: var(--color-body);
 }
 .fact dd {
   margin-top: 2px;
-  font-weight: 850;
+  font-weight: 700;
   overflow-wrap: anywhere;
 }
 
@@ -135,10 +135,10 @@
   align-items: center;
   gap: var(--space-sm);
   color: var(--color-body);
-  font-weight: 650;
+  font-weight: 600;
 }
 .detail dd {
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .notice {
@@ -149,7 +149,7 @@
   background: var(--color-primary-soft);
   color: var(--color-surface-dark);
   font-size: 15px;
-  font-weight: 650;
+  font-weight: 600;
   line-height: 1.5;
 }
 .notice svg {

@@ -70,3 +70,40 @@ export async function deleteListing(formData) {
 
   revalidatePath("/mes-annonces");
 }
+
+function brazzavilleToday() {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Brazzaville" });
+}
+
+export async function updateAvailability(_previousState, formData) {
+  await requireRole("owner", "/mes-annonces");
+
+  const id = formData.get("id");
+  const availability = formData.get("availability");
+  const date = formData.get("availableFrom");
+
+  if (availability !== "available" && availability !== "available_soon") {
+    return { error: "Choisissez Libre ou Bientôt libre." };
+  }
+  if (availability === "available_soon") {
+    if (!date) return { error: "Indiquez la date à partir de laquelle le logement sera libre." };
+    if (date <= brazzavilleToday()) return { error: "La date doit être à partir de demain." };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("listings")
+    .update({
+      availability,
+      available_from: availability === "available_soon" ? date : null,
+    })
+    .eq("id", id)
+    .in("status", ["scheduled", "published"])
+    .select("id");
+  if (error || data.length === 0) {
+    return { error: "Impossible de changer la disponibilité pour le moment. Réessayez dans un instant." };
+  }
+
+  revalidatePath("/mes-annonces");
+  return { saved: true };
+}

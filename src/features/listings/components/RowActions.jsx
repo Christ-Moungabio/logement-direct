@@ -73,7 +73,7 @@ export default function RowActions({ listing }) {
     case "draft":
       return (
         <div className={styles.actions}>
-          <Button href={editHref} size="sm" variant="secondary">
+          <Button href={editHref} size="sm">
             Continuer
           </Button>
           <DeleteAction id={listing.id} />

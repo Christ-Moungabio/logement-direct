@@ -1,12 +1,32 @@
-.shell {
+.app {
+  display: grid;
+  min-height: 100dvh;
+  grid-template-columns: 248px minmax(0, 1fr);
+  background: var(--color-page);
+}
+
+.content {
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  gap: var(--space-xl);
-  padding-block: clamp(32px, 5vw, 64px) clamp(56px, 7vw, 104px);
 }
 
 .main {
   display: flex;
+  width: 100%;
+  max-width: 1240px;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: 20px;
+  padding: 28px var(--space-xxl) 64px;
+}
+
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+  }
+
+  .main {
+    padding: var(--space-xl) var(--space-lg) var(--space-3xl);
+  }
 }

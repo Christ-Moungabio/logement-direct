@@ -7,14 +7,14 @@ import { hideListing } from "../actions";
 import { HIDE_REASON_MAX_LENGTH, HIDE_REASON_MIN_LENGTH } from "../schemas";
 import styles from "./AdminListings.module.css";
 
-export default function HideListingForm({ listingId }) {
+export default function HideListingForm({ listingId, summaryClassName = listingStyles.confirmSummary }) {
   const [state, formAction, pending] = useActionState(hideListing, null);
   const fieldId = `hide-reason-${listingId}`;
   const error = state?.errors?.reason?.[0] ?? state?.formError;
 
   return (
     <details className={listingStyles.confirm}>
-      <summary className={listingStyles.confirmSummary}>Masquer</summary>
+      <summary className={summaryClassName}>Masquer</summary>
       <div className={`${listingStyles.confirmBody} ${styles.hideBody}`}>
         <form action={formAction} className={listingStyles.confirmForm}>
           <input type="hidden" name="listingId" value={listingId} />
