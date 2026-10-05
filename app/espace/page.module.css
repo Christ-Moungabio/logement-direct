@@ -1,0 +1,19 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  padding-block: clamp(32px, 5vw, 64px) clamp(56px, 7vw, 104px);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+
+.intro {
+  margin-top: var(--space-xs);
+  color: var(--color-body);
+}
