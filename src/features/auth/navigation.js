@@ -5,13 +5,25 @@ export const ROLE_LABELS = {
 };
 
 const HOME_BY_ROLE = {
-  owner: "/",
-  tenant: "/",
-  admin: "/",
+  owner: "/mes-annonces",
+  tenant: "/recherche",
+  admin: "/admin",
 };
 
 export function homeForRole(role) {
   return HOME_BY_ROLE[role] ?? "/";
+}
+
+const SPACE_LABELS = {
+  owner: "Mes annonces",
+  tenant: "Rechercher",
+  admin: "Administration",
+};
+
+export function spaceLinkForRole(role) {
+  const href = homeForRole(role);
+  if (href === "/") return null;
+  return { href, label: SPACE_LABELS[role] };
 }
 
 const PROTECTED_PREFIXES = ["/mes-annonces", "/admin"];

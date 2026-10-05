@@ -1,6 +1,7 @@
+import { Suspense } from "react";
 import Link from "next/link";
-import { Menu } from "lucide-react";
 import { SITE } from "../lib/constants";
+import HeaderAccount from "./HeaderAccount";
 import styles from "./Header.module.css";
 
 const NAV_LINKS = [
@@ -35,33 +36,9 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className={styles.actions}>
-          <Link href="/connexion" className={styles.login}>
-            Connexion
-          </Link>
-          <Link href="/inscription" className={styles.cta}>
-            Créer un compte
-          </Link>
-
-          <details className={styles.menu}>
-            <summary className={styles.menuButton} aria-label="Ouvrir le menu">
-              <Menu size={22} strokeWidth={2.2} aria-hidden="true" />
-            </summary>
-            <nav className={styles.menuPanel} aria-label="Menu mobile">
-              {NAV_LINKS.map((link) => (
-                <Link key={link.href} href={link.href} className={styles.menuLink}>
-                  {link.label}
-                </Link>
-              ))}
-              <Link href="/connexion" className={styles.menuLink}>
-                Connexion
-              </Link>
-              <Link href="/inscription" className={`${styles.menuLink} ${styles.menuCta}`}>
-                Créer un compte
-              </Link>
-            </nav>
-          </details>
-        </div>
+        <Suspense fallback={<div className={styles.actions} aria-hidden="true" />}>
+          <HeaderAccount navLinks={NAV_LINKS} />
+        </Suspense>
       </div>
     </header>
   );

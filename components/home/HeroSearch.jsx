@@ -1,44 +1,30 @@
-"use client";
-
+import Form from "next/form";
 import { Search } from "lucide-react";
-import { PROPERTY_TYPES } from "../../lib/constants";
-import { SEARCH_EVENT } from "../../lib/search";
 import styles from "../../app/page.module.css";
 
-export default function HeroSearch() {
-  function handleSubmit(event) {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const criteria = {
-      type: data.get("type") ?? "",
-      budget: data.get("prix_max") ?? "",
-    };
-    window.dispatchEvent(new CustomEvent(SEARCH_EVENT, { detail: criteria }));
-    document.getElementById("logements")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
+export default function HeroSearch({ propertyTypes }) {
   return (
-    <form className={styles.search} role="search" aria-label="Rechercher un logement" onSubmit={handleSubmit}>
+    <Form action="/recherche" className={styles.search} role="search" aria-label="Rechercher un logement">
       <div className={styles.searchField}>
-        <label htmlFor="type" className={styles.searchLabel}>
+        <label htmlFor="types" className={styles.searchLabel}>
           Type de bien
         </label>
-        <select id="type" name="type" defaultValue="" className={styles.searchInput}>
+        <select id="types" name="types" defaultValue="" className={styles.searchInput}>
           <option value="">Tous les types</option>
-          {PROPERTY_TYPES.map((type) => (
-            <option key={type.value} value={type.value}>
+          {propertyTypes.map((type) => (
+            <option key={type.id} value={type.id}>
               {type.label}
             </option>
           ))}
         </select>
       </div>
       <div className={styles.searchField}>
-        <label htmlFor="prix_max" className={styles.searchLabel}>
+        <label htmlFor="loyerMax" className={styles.searchLabel}>
           Budget max par mois
         </label>
         <input
-          id="prix_max"
-          name="prix_max"
+          id="loyerMax"
+          name="loyerMax"
           type="number"
           inputMode="numeric"
           min="0"
@@ -51,6 +37,6 @@ export default function HeroSearch() {
         <Search size={19} strokeWidth={2.6} aria-hidden="true" />
         <span>Rechercher</span>
       </button>
-    </form>
+    </Form>
   );
 }

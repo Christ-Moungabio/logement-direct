@@ -18,6 +18,7 @@ const COLUMNS = [
     title: SITE.name,
     links: [
       { href: "/inscription?role=proprietaire", label: "Publier un logement" },
+      { href: "/recherche", label: "Rechercher" },
       { href: "/confidentialite", label: "Confidentialité" },
       { href: "/conditions", label: "Conditions d'utilisation" },
     ],

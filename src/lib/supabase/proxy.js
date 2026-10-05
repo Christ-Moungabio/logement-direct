@@ -1,5 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
+import {
+  ACTIVITY_COOKIE,
+  ACTIVITY_COOKIE_OPTIONS,
+  isIdleExpired,
+} from "../../features/auth/session";
 
 export async function updateSession(request) {
   let response = NextResponse.next({ request });
@@ -25,6 +30,17 @@ export async function updateSession(request) {
   );
 
   const { data } = await supabase.auth.getClaims();
+  let claims = data?.claims ?? null;
 
-  return { response, claims: data?.claims ?? null };
+  if (claims) {
+    if (isIdleExpired(request.cookies.get(ACTIVITY_COOKIE)?.value)) {
+      await supabase.auth.signOut({ scope: "local" });
+      claims = null;
+      response.cookies.delete(ACTIVITY_COOKIE);
+    } else {
+      response.cookies.set(ACTIVITY_COOKIE, String(Date.now()), ACTIVITY_COOKIE_OPTIONS);
+    }
+  }
+
+  return { response, claims };
 }

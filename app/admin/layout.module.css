@@ -1,0 +1,12 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  padding-block: clamp(32px, 5vw, 64px) clamp(56px, 7vw, 104px);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireRole } from "../auth/queries";
+import { createAdminClient } from "../../lib/supabase/admin";
 import { createClient } from "../../lib/supabase/server";
 import { CLOSE_REASONS } from "./status";
 
@@ -62,7 +63,9 @@ export async function deleteListing(formData) {
 
   // Les fichiers ne sont retirés qu'une fois l'annonce vraiment supprimée.
   if (photos?.length) {
-    await supabase.storage.from(PHOTOS_BUCKET).remove(photos.map((photo) => photo.storage_path));
+    await createAdminClient()
+      .storage.from(PHOTOS_BUCKET)
+      .remove(photos.map((photo) => photo.storage_path));
   }
 
   revalidatePath("/mes-annonces");

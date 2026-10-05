@@ -22,6 +22,14 @@
   transform: scale(1.04);
 }
 
+.noPhoto {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--color-mute);
+}
+
 .card:focus-visible {
   outline: none;
 }
