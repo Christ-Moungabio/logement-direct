@@ -1,5 +1,6 @@
 import "server-only";
 
+import { publishChecklist } from "../listing-form/checklist";
 import { PHOTOS_BUCKET } from "../listing-form/photos";
 import { createClient } from "../../lib/supabase/server";
 import { displayStatus } from "./status";
@@ -17,8 +18,8 @@ export async function getOwnerListings(ownerId) {
     .from("listings")
     .select(
       `
-      id, status, monthly_rent, advance_months, water, electricity, description,
-      visible_from, published_at, updated_at, close_reason, hidden_reason,
+      id, status, property_type_id, city_id, neighborhood_id, monthly_rent, advance_months,
+      water, electricity, description, visible_from, published_at, updated_at, close_reason, hidden_reason,
       availability, available_from,
       property_types ( name ),
       cities ( name ),
@@ -34,6 +35,8 @@ export async function getOwnerListings(ownerId) {
   const now = new Date();
   return data.map((row) => {
     const photo = primaryPhoto(row.listing_photos);
+    const checklist = publishChecklist(row, row.listing_photos.length);
+    const missing = checklist.filter((item) => !item.done).map((item) => item.key);
     return {
       id: row.id,
       status: displayStatus(row, now),
@@ -46,7 +49,12 @@ export async function getOwnerListings(ownerId) {
       neighborhood: row.neighborhoods?.name ?? null,
       photoCount: row.listing_photos.length,
       photoUrl: photo ? supabase.storage.from(PHOTOS_BUCKET).getPublicUrl(photo.storage_path).data.publicUrl : null,
-      hasDescription: Boolean(row.description),
+      progress: {
+        done: checklist.length - missing.length,
+        total: checklist.length,
+        percent: Math.round(((checklist.length - missing.length) / checklist.length) * 100),
+        missing,
+      },
       visibleFrom: row.visible_from,
       publishedAt: row.published_at,
       updatedAt: row.updated_at,
