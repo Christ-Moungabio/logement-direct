@@ -4,7 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./AdminNav.module.css";
 
-const LINKS = [{ href: "/admin", label: "Vue d'ensemble" }];
+const LINKS = [
+  { href: "/admin", label: "Vue d'ensemble" },
+  { href: "/admin/annonces", label: "Annonces" },
+];
 
 function isActive(pathname, href) {
   if (href === "/admin") return pathname === href;

@@ -1,0 +1,14 @@
+.intro {
+  margin-top: var(--space-xs);
+  max-width: 62ch;
+  color: var(--color-body);
+}
+
+.empty {
+  padding: var(--space-3xl) var(--space-xl);
+  border: 1px dashed var(--color-hairline-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-canvas);
+  text-align: center;
+  color: var(--color-charcoal);
+}
