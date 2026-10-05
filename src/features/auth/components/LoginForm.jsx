@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Button from "../../../../components/ui/Button";
 import { signIn } from "../actions";
+import { signupPath } from "../navigation";
 import { fieldErrors, loginSchema } from "../schemas";
 import Field from "./Field";
 import PasswordInput from "./PasswordInput";
@@ -75,7 +76,7 @@ export default function LoginForm({ next }) {
       </Button>
 
       <p className={styles.switch}>
-        Pas encore de compte ? <Link href="/inscription">Créer un compte</Link>
+        Pas encore de compte ? <Link href={signupPath(next)}>Créer un compte</Link>
       </p>
     </form>
   );

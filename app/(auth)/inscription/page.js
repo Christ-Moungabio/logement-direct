@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import AuthLayout from "../../../src/features/auth/components/AuthLayout";
 import SignupForm from "../../../src/features/auth/components/SignupForm";
-import { homeForRole } from "../../../src/features/auth/navigation";
+import { homeForRole, safeNextPath } from "../../../src/features/auth/navigation";
 import { getCurrentProfile } from "../../../src/features/auth/queries";
 
 export const metadata = {
@@ -13,17 +13,18 @@ export const metadata = {
 const ROLE_PARAMS = { locataire: "tenant", proprietaire: "owner" };
 
 export default async function InscriptionPage({ searchParams }) {
-  const profile = await getCurrentProfile();
-  if (profile) redirect(homeForRole(profile.role));
+  const { role, next } = await searchParams;
+  const safeNext = safeNextPath(next);
 
-  const { role } = await searchParams;
+  const profile = await getCurrentProfile();
+  if (profile) redirect(safeNext ?? homeForRole(profile.role));
 
   return (
     <AuthLayout
       title="Créer un compte"
       intro="C'est gratuit. Choisissez votre profil, puis renseignez vos informations."
     >
-      <SignupForm initialRole={ROLE_PARAMS[role] ?? ""} />
+      <SignupForm initialRole={ROLE_PARAMS[role] ?? ""} next={safeNext} />
     </AuthLayout>
   );
 }

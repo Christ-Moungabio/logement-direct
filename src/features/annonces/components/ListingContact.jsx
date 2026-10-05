@@ -3,7 +3,7 @@ import { Lock, MessageCircle, Phone, UserRound } from "lucide-react";
 import Button from "../../../../components/ui/Button";
 import { formatPrice } from "../../../../lib/format";
 import { buildTelLink, buildWhatsAppLink, formatPhoneNumber } from "../../../../lib/whatsapp";
-import { loginPath } from "../../auth/navigation";
+import { loginPath, signupPath } from "../../auth/navigation";
 import styles from "./ListingContact.module.css";
 
 // Contact du propriétaire (EF-FIC-05, RG-13). Pour un visiteur, `contact` vaut
@@ -19,7 +19,7 @@ export function ContactCard({ relation, contact, whatsappMessage, returnTo }) {
           Se connecter
         </Button>
         <p className={styles.signup}>
-          Pas de compte ? <Link href="/inscription">Créer un compte</Link>
+          Pas de compte ? <Link href={signupPath(returnTo)}>Créer un compte</Link>
         </p>
       </Card>
     );
