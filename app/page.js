@@ -2,7 +2,6 @@ import Image from "next/image";
 import {
   ArrowRight,
   Flag,
-  HandCoins,
   Images,
   KeyRound,
   LogIn,
@@ -18,7 +17,7 @@ import HeroSearch from "../components/home/HeroSearch";
 import LatestListings from "../components/home/LatestListings";
 import Testimonials from "../components/home/Testimonials";
 import { getLatestListings, getPropertyTypes } from "../src/features/accueil/queries";
-import heroPhoto from "../public/images/brazzaville-corniche.jpg";
+import heroPhoto from "../public/images/hero-terrasse.jpg";
 import finalPhoto from "../public/images/annonce-maison-loandjili.jpg";
 import styles from "./page.module.css";
 
@@ -115,13 +114,13 @@ export default async function HomePage() {
 
   return (
     <>
-      <Header />
+      <Header overlay />
 
       <main>
         <section id="accueil" className={styles.hero} aria-labelledby="hero-title">
           <Image
             src={heroPhoto}
-            alt="Le pont de la Corniche et les quartiers riverains de Brazzaville, au bord du fleuve Congo"
+            alt="Terrasse couverte d'une maison, avec un canapé, des plantes et une vue sur le jardin"
             fill
             preload
             sizes="100vw"
@@ -130,30 +129,17 @@ export default async function HomePage() {
           />
           <div className={styles.heroShade} aria-hidden="true" />
           <div className={`container ${styles.heroInner}`}>
-            <h1 id="hero-title" className={`text-display-2xl ${styles.heroTitle}`}>
-              Trouvez un logement à louer, directement auprès des propriétaires
-            </h1>
-            <p className={styles.heroLead}>
-              Studios, chambres, appartements et maisons à Brazzaville, publiés par les propriétaires eux-mêmes.
-              Comparez le loyer et l&apos;avance demandée, puis contactez le propriétaire directement.
-            </p>
+            <div className={styles.heroContent}>
+              <h1 id="hero-title" className={styles.heroTitle}>
+                Trouvez un logement <strong>sans démarcheur.</strong>
+              </h1>
+              <p className={styles.heroLead}>
+                Les propriétaires mettent eux-mêmes leurs logements en ligne. Vous voyez le loyer et l&apos;avance
+                avant de vous déplacer, et vous les appelez sans intermédiaire.
+              </p>
 
-            <HeroSearch propertyTypes={propertyTypes} />
-
-            <ul className={styles.promises}>
-              <li>
-                <HandCoins size={17} strokeWidth={2.3} aria-hidden="true" />
-                Réservez votre visite sans intermédiaire payant
-              </li>
-              <li>
-                <MessageCircle size={17} strokeWidth={2.3} aria-hidden="true" />
-                Contact direct par WhatsApp ou appel
-              </li>
-              <li>
-                <KeyRound size={17} strokeWidth={2.3} aria-hidden="true" />
-                Caution réglée directement avec le propriétaire
-              </li>
-            </ul>
+              <HeroSearch propertyTypes={propertyTypes} />
+            </div>
           </div>
         </section>
 
