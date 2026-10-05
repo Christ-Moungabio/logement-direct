@@ -16,14 +16,12 @@ export function homeForRole(role) {
 
 const SPACE_LABELS = {
   owner: "Mon espace",
-  tenant: "Rechercher",
   admin: "Administration",
 };
 
 export function spaceLinkForRole(role) {
-  const href = homeForRole(role);
-  if (href === "/") return null;
-  return { href, label: SPACE_LABELS[role] };
+  const label = SPACE_LABELS[role];
+  return label ? { href: homeForRole(role), label } : null;
 }
 
 const PROTECTED_PREFIXES = ["/espace", "/mes-annonces", "/admin"];
