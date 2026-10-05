@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createAdminClient } from "../../lib/supabase/admin";
 import { createClient } from "../../lib/supabase/server";
-import { homeForRole, safeNextPath } from "./navigation";
+import { destinationForRole, safeNextPath } from "./navigation";
 import { fieldErrors, loginSchema, signupSchema } from "./schemas";
 import { ACTIVITY_COOKIE } from "./session";
 
@@ -84,7 +84,7 @@ export async function signUp(_previousState, formData) {
   const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
   if (signInError) redirect("/connexion");
 
-  redirect(next ?? homeForRole(role));
+  redirect(destinationForRole(next, role));
 }
 
 const LOGIN_ERROR = "Adresse e-mail ou mot de passe incorrect.";
@@ -118,7 +118,7 @@ export async function signIn(_previousState, formData) {
     return { values, formError: LOGIN_ERROR };
   }
 
-  redirect(next ?? homeForRole(profile.role));
+  redirect(destinationForRole(next, profile.role));
 }
 
 export async function signOut() {
