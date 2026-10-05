@@ -203,3 +203,45 @@ export async function getReport(id) {
     })),
   };
 }
+
+export async function getDashboardData() {
+  const supabase = await createClient();
+  const accountsSince = new Date(Date.now() - 15 * 86_400_000).toISOString();
+  const countRole = (role) =>
+    countRows(supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", role));
+
+  const [listingsResult, reportsResult, recentProfilesResult, tenants, owners, admins] = await Promise.all([
+    supabase
+      .from("listings")
+      .select("id, status, visible_from, created_at, neighborhoods ( name )")
+      .order("created_at", { ascending: false })
+      .limit(1000),
+    supabase.from("reports").select("id, created_at").eq("status", "pending"),
+    supabase.from("profiles").select("created_at").gte("created_at", accountsSince),
+    countRole("tenant"),
+    countRole("owner"),
+    countRole("admin"),
+  ]);
+
+  for (const result of [listingsResult, reportsResult, recentProfilesResult]) {
+    if (result.error) throw new Error(`Impossible de charger la vue d'ensemble : ${result.error.message}`);
+  }
+
+  return {
+    listings: listingsResult.data.map((row) => ({
+      id: row.id,
+      status: row.status,
+      visibleFrom: row.visible_from,
+      createdAt: row.created_at,
+      neighborhood: row.neighborhoods?.name ?? null,
+    })),
+    pendingReports: reportsResult.data.map((row) => ({ id: row.id, createdAt: row.created_at })),
+    accounts: {
+      total: tenants + owners + admins,
+      tenants,
+      owners,
+      admins,
+      recentCreatedAt: recentProfilesResult.data.map((row) => row.created_at),
+    },
+  };
+}
