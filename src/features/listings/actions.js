@@ -75,7 +75,7 @@ function brazzavilleToday() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Brazzaville" });
 }
 
-export async function updateAvailability(formData) {
+export async function updateAvailability(_previousState, formData) {
   await requireRole("owner", "/mes-annonces");
 
   const id = formData.get("id");
@@ -83,14 +83,15 @@ export async function updateAvailability(formData) {
   const date = formData.get("availableFrom");
 
   if (availability !== "available" && availability !== "available_soon") {
-    throw new Error("Disponibilité invalide.");
+    return { error: "Choisissez Libre ou Bientôt libre." };
   }
-  if (availability === "available_soon" && !(date && date > brazzavilleToday())) {
-    throw new Error("Indiquez une date de disponibilité dans le futur.");
+  if (availability === "available_soon") {
+    if (!date) return { error: "Indiquez la date à partir de laquelle le logement sera libre." };
+    if (date <= brazzavilleToday()) return { error: "La date doit être à partir de demain." };
   }
 
   const supabase = await createClient();
-  const result = await supabase
+  const { data, error } = await supabase
     .from("listings")
     .update({
       availability,
@@ -99,7 +100,10 @@ export async function updateAvailability(formData) {
     .eq("id", id)
     .in("status", ["scheduled", "published"])
     .select("id");
-  check(result, "Impossible de changer la disponibilité");
+  if (error || data.length === 0) {
+    return { error: "Impossible de changer la disponibilité pour le moment. Réessayez dans un instant." };
+  }
 
   revalidatePath("/mes-annonces");
+  return { saved: true };
 }

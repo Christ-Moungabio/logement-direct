@@ -1,10 +1,16 @@
-import Button from "../../../../components/ui/Button";
 import { formatDayMonth } from "../../../../lib/format";
-import { updateAvailability } from "../actions";
+import AvailabilityForm from "./AvailabilityForm";
 import styles from "./Listings.module.css";
 
 function brazzavilleToday() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Brazzaville" });
+}
+
+// La date de disponibilité doit être dans le futur : le plus tôt possible, c'est demain.
+function tomorrow() {
+  const date = new Date(`${brazzavilleToday()}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + 1);
+  return date.toISOString().slice(0, 10);
 }
 
 // Quand la date annoncée est atteinte, le logement s'affiche de nouveau "Libre".
@@ -20,33 +26,12 @@ export default function AvailabilityControl({ listing }) {
     <details className={styles.confirm}>
       <summary className={styles.availabilitySummary}>{availabilityLabel(listing)} · Changer</summary>
       <div className={styles.confirmBody}>
-        <form action={updateAvailability} className={styles.confirmForm}>
-          <input type="hidden" name="id" value={listing.id} />
-
-          <label className={styles.radio}>
-            <input type="radio" name="availability" value="available" defaultChecked={!soon} />
-            Libre
-          </label>
-          <label className={styles.radio}>
-            <input type="radio" name="availability" value="available_soon" defaultChecked={soon} />
-            Bientôt libre
-          </label>
-
-          <label className="text-body-sm" htmlFor={`date-${listing.id}`}>
-            Libre à partir du (si bientôt libre)
-          </label>
-          <input
-            id={`date-${listing.id}`}
-            type="date"
-            name="availableFrom"
-            className={styles.select}
-            defaultValue={soon ? listing.availableFrom : ""}
-          />
-
-          <Button type="submit" size="sm">
-            Enregistrer
-          </Button>
-        </form>
+        <AvailabilityForm
+          listingId={listing.id}
+          soon={soon}
+          availableFrom={listing.availableFrom}
+          minDate={tomorrow()}
+        />
       </div>
     </details>
   );
