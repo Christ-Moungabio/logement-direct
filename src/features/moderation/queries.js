@@ -2,6 +2,7 @@ import "server-only";
 
 import { capitalize } from "../../../lib/format";
 import { createClient } from "../../lib/supabase/server";
+import { PHOTOS_BUCKET } from "../listing-form/photos";
 import { displayStatus } from "../listings/status";
 
 async function countRows(query) {
@@ -161,4 +162,86 @@ export async function getDashboardData() {
       recentCreatedAt: recentProfilesResult.data.map((row) => row.created_at),
     },
   };
+}
+
+function primaryPhotoUrl(supabase, photos) {
+  const [photo] = [...(photos ?? [])].sort(
+    (a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order,
+  );
+  return photo ? supabase.storage.from(PHOTOS_BUCKET).getPublicUrl(photo.storage_path).data.publicUrl : null;
+}
+
+export async function getPendingReportsPreview(limit = 5) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("reports")
+    .select(
+      `
+      id, reason, created_at,
+      listing:listings (
+        id, monthly_rent, property_types ( name ), neighborhoods ( name ),
+        listing_photos ( storage_path, is_primary, sort_order )
+      ),
+      reporter:profiles!reporter_id ( full_name )
+    `,
+    )
+    .eq("status", "pending")
+    .order("created_at", { ascending: true })
+    .limit(limit);
+
+  if (error) throw new Error(`Impossible de charger les signalements : ${error.message}`);
+
+  return data.map((row) => ({
+    id: row.id,
+    reason: row.reason,
+    createdAt: row.created_at,
+    reporterName: row.reporter?.full_name ?? null,
+    listing: row.listing
+      ? {
+          id: row.listing.id,
+          title: listingTitle(row.listing),
+          neighborhood: row.listing.neighborhoods?.name ?? null,
+          rent: row.listing.monthly_rent,
+          photoUrl: primaryPhotoUrl(supabase, row.listing.listing_photos),
+        }
+      : null,
+  }));
+}
+
+export async function getModerationLog(limit = 5) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("reports")
+    .select(
+      `
+      id, reason, status, handled_at, listing_id,
+      listing:listings ( id, hidden_reason, property_types ( name ), neighborhoods ( name ) ),
+      handler:profiles!handled_by ( full_name )
+    `,
+    )
+    .in("status", ["resolved", "rejected"])
+    .not("handled_at", "is", null)
+    .order("handled_at", { ascending: false })
+    .limit(limit * 4);
+
+  if (error) throw new Error(`Impossible de charger le journal de modération : ${error.message}`);
+
+  const seen = new Set();
+  return data
+    .filter((row) => {
+      const key = `${row.listing_id}|${row.status}|${row.handled_at}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, limit)
+    .map((row) => ({
+      id: row.id,
+      decision: row.status,
+      reason: row.reason,
+      handledAt: row.handled_at,
+      handlerName: row.handler?.full_name ?? null,
+      listingTitle: row.listing ? listingTitle(row.listing) : null,
+      hiddenReason: row.listing?.hidden_reason ?? null,
+    }));
 }
