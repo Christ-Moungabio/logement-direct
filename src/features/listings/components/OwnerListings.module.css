@@ -186,6 +186,11 @@
   left: 0;
 }
 
+.footer details > div {
+  right: 0;
+  left: auto;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
