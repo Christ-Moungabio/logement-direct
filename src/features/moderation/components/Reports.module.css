@@ -28,7 +28,7 @@
 
 .reason {
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--color-danger);
@@ -43,12 +43,12 @@
 
 .many {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-warning-text);
 }
 
 .deleted {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-mute);
 }
 

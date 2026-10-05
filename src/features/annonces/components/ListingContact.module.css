@@ -16,23 +16,23 @@
 
 .text {
   color: var(--color-body);
-  font-weight: 550;
+  font-weight: 500;
 }
 
 .owner {
   font-size: 17px;
-  font-weight: 850;
+  font-weight: 700;
 }
 
 .signup {
   color: var(--color-charcoal);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 550;
   text-align: center;
 }
 .signup a {
   color: var(--color-primary);
-  font-weight: 800;
+  font-weight: 700;
   text-decoration: underline;
 }
 
@@ -78,13 +78,13 @@
   flex: none;
   flex-direction: column;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 550;
   line-height: 1.25;
   color: var(--color-body);
 }
 .barPrice strong {
   font-size: 15px;
-  font-weight: 850;
+  font-weight: 700;
   color: var(--color-ink);
 }
 

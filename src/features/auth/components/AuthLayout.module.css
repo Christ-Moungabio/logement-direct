@@ -23,7 +23,7 @@
 
 .intro {
   font-size: 16.5px;
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.55;
   color: var(--color-charcoal);
 }
@@ -64,7 +64,7 @@
   font-size: 26px;
   font-weight: 400;
   line-height: 1.15;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .promises {
@@ -79,7 +79,7 @@
   align-items: center;
   gap: 10px;
   font-size: 15px;
-  font-weight: 650;
+  font-weight: 600;
   color: var(--color-on-dark-mute);
 }
 

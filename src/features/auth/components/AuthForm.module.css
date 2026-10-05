@@ -10,7 +10,7 @@
   background: var(--color-danger-bg);
   color: var(--color-danger);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.45;
 }
 
@@ -22,20 +22,20 @@
 
 .label {
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-ink);
 }
 
 .hint {
   font-size: 13.5px;
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.4;
   color: var(--color-body);
 }
 
 .error {
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.4;
   color: var(--color-danger);
 }
@@ -48,7 +48,7 @@
   border-radius: var(--radius-md);
   background: var(--color-canvas);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 550;
   transition:
     border-color var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-fast) var(--ease-out);
@@ -77,7 +77,7 @@
   border-right: 0;
   border-radius: var(--radius-md) 0 0 var(--radius-md);
   background: var(--color-surface-soft);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-charcoal);
 }
 .phone .input {
@@ -121,11 +121,11 @@
   padding: 0 14px;
   border-radius: var(--radius-md);
   background: var(--color-surface-soft);
-  font-weight: 700;
+  font-weight: 600;
 }
 .static span {
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 550;
   color: var(--color-body);
 }
 
@@ -168,11 +168,11 @@
 }
 .roleTitle {
   font-size: 15.5px;
-  font-weight: 800;
+  font-weight: 700;
 }
 .roleText {
   font-size: 13.5px;
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.4;
   color: var(--color-body);
 }
@@ -188,7 +188,7 @@
   align-items: flex-start;
   gap: 10px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 550;
   line-height: 1.45;
   cursor: pointer;
 }
@@ -201,7 +201,7 @@
 .check a,
 .switch a {
   color: var(--color-primary);
-  font-weight: 800;
+  font-weight: 700;
   text-decoration: underline;
 }
 
@@ -214,7 +214,7 @@
   padding-top: 20px;
   border-top: 1px solid var(--color-hairline);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 550;
   color: var(--color-charcoal);
   text-align: center;
 }
