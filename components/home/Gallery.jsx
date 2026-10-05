@@ -9,6 +9,7 @@ import studio from "../../public/images/galerie-studio.jpg";
 import cuisine from "../../public/images/galerie-cuisine.jpg";
 import { UTILITY_LABELS } from "../../lib/constants";
 import { formatAmount, formatAvailability, formatShortDate } from "../../lib/format";
+import { loginPath } from "../../src/features/auth/navigation";
 import styles from "./Gallery.module.css";
 
 const PHOTOS = [
@@ -121,7 +122,7 @@ export default function Gallery() {
             Publiée le {formatShortDate(SAMPLE.publishedAt)} · mise à jour le {formatShortDate(SAMPLE.updatedAt)}
           </p>
           <p className={styles.listingNote}>Adresse exacte communiquée par le propriétaire.</p>
-          <Link href="/connexion?role=locataire" className={styles.listingCta}>
+          <Link href={loginPath("/recherche")} className={styles.listingCta}>
             <LogIn size={17} strokeWidth={2.4} aria-hidden="true" />
             Se connecter pour contacter
           </Link>
