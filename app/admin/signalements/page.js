@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireRole } from "../../../src/features/auth/queries";
 import listingStyles from "../../../src/features/listings/components/Listings.module.css";
+import AdminPageHeader from "../../../src/features/moderation/components/AdminPageHeader";
 import ReportsList from "../../../src/features/moderation/components/ReportsList";
 import { getReportCounts, getReports } from "../../../src/features/moderation/queries";
 import { REPORT_STATUSES, reportStatusFromParam, reportsHref } from "../../../src/features/moderation/reports";
@@ -23,13 +24,10 @@ export default async function AdminReportsPage({ searchParams }) {
 
   return (
     <>
-      <div>
-        <h1 className="text-display-lg">Signalements</h1>
-        <p className={`${styles.intro} text-body-md`}>
-          Les locataires signalent depuis la fiche une annonce fausse, déjà louée ou suspecte. Les plus anciens
-          signalements à traiter apparaissent en premier.
-        </p>
-      </div>
+      <AdminPageHeader
+        title="Signalements"
+        description="Les locataires signalent depuis la fiche une annonce fausse, déjà louée ou suspecte. Les plus anciens signalements à traiter apparaissent en premier."
+      />
 
       <nav className={listingStyles.filters} aria-label="Filtrer les signalements">
         {Object.entries(REPORT_STATUSES).map(([status, { label }]) => (
