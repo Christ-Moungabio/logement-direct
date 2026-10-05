@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ImageIcon } from "lucide-react";
 import Button from "../../../../components/ui/Button";
 import { capitalize, formatPrice, formatShortDate } from "../../../../lib/format";
@@ -43,7 +44,11 @@ export default function AdminListingsList({ listings }) {
         <li key={listing.id} className={listingStyles.row}>
           <div className={listingStyles.listing}>
             <span className={listingStyles.thumb} aria-hidden="true">
-              <ImageIcon size={20} strokeWidth={1.8} />
+              {listing.photoUrl ? (
+                <Image src={listing.photoUrl} alt="" fill sizes="52px" className={listingStyles.thumbImage} />
+              ) : (
+                <ImageIcon size={20} strokeWidth={1.8} />
+              )}
             </span>
             <div className={listingStyles.listingText}>
               <p className="text-heading-sm">{listingTitle(listing)}</p>

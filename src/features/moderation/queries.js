@@ -33,7 +33,7 @@ export async function getAdminListings(filter) {
       cities ( name ),
       neighborhoods ( name ),
       owner:profiles ( full_name ),
-      listing_photos ( count )
+      listing_photos ( storage_path, is_primary, sort_order )
     `,
     )
     .order("updated_at", { ascending: false })
@@ -55,7 +55,7 @@ export async function getAdminListings(filter) {
     city: row.cities?.name ?? null,
     neighborhood: row.neighborhoods?.name ?? null,
     ownerName: row.owner?.full_name ?? null,
-    photoCount: row.listing_photos?.[0]?.count ?? 0,
+    photoUrl: primaryPhotoUrl(supabase, row.listing_photos),
     publishedAt: row.published_at,
     updatedAt: row.updated_at,
     hiddenReason: row.hidden_reason,

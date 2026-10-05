@@ -27,14 +27,20 @@
 }
 
 .thumb {
+  position: relative;
   display: grid;
   place-items: center;
   flex: none;
+  overflow: hidden;
   width: 52px;
   height: 52px;
   border-radius: var(--radius-sm);
   background: var(--color-surface-soft);
   color: var(--color-mute);
+}
+
+.thumbImage {
+  object-fit: cover;
 }
 
 .listingText {
