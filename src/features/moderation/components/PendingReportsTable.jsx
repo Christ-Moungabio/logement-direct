@@ -72,7 +72,7 @@ export default function PendingReportsTable({ reports, total }) {
                     {timeAgo(report.createdAt)}
                   </td>
                   <td className={styles.actionCell}>
-                    <Link href="/admin/signalements" className={`${shell.button} ${shell.buttonSmall}`}>
+                    <Link href={`/admin/signalements/${report.id}`} className={`${shell.button} ${shell.buttonSmall}`}>
                       Examiner
                     </Link>
                   </td>
