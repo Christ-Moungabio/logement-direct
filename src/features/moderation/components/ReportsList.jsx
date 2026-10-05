@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import { ImageIcon } from "lucide-react";
 import Button from "../../../../components/ui/Button";
 import { formatAge, formatShortDate } from "../../../../lib/format";
 import { REPORT_REASON_LABELS } from "../../annonces/labels";
@@ -31,22 +33,31 @@ export default function ReportsList({ reports }) {
     <ul className={styles.list}>
       {reports.map((report) => (
         <li key={report.id} className={styles.report}>
-          <div className={styles.main}>
-            <Link href={`/admin/signalements/${report.id}`} className={styles.reason}>
-              {REPORT_REASON_LABELS[report.reason]}
-            </Link>
-            <ListingLine listing={report.listing} reportsOnListing={report.reportsOnListing} />
-            {report.comment && <blockquote className={styles.comment}>« {report.comment} »</blockquote>}
-            <p className={`${styles.meta} text-caption-sm`}>
-              Signalé par {report.reporterName ?? "un compte supprimé"} · {formatAge(report.createdAt)}
-              {report.status !== "pending" && (
-                <>
-                  {" "}
-                  · {DECISIONS[report.status]} par {report.handlerName ?? "un administrateur"} le{" "}
-                  {formatShortDate(report.handledAt)}
-                </>
+          <div className={styles.content}>
+            <span className={styles.thumb} aria-hidden="true">
+              {report.listing?.photoUrl ? (
+                <Image src={report.listing.photoUrl} alt="" fill sizes="52px" className={styles.thumbImage} />
+              ) : (
+                <ImageIcon size={20} strokeWidth={1.8} />
               )}
-            </p>
+            </span>
+            <div className={styles.main}>
+              <Link href={`/admin/signalements/${report.id}`} className={styles.reason}>
+                {REPORT_REASON_LABELS[report.reason]}
+              </Link>
+              <ListingLine listing={report.listing} reportsOnListing={report.reportsOnListing} />
+              {report.comment && <blockquote className={styles.comment}>« {report.comment} »</blockquote>}
+              <p className={`${styles.meta} text-caption-sm`}>
+                Signalé par {report.reporterName ?? "un compte supprimé"} · {formatAge(report.createdAt)}
+                {report.status !== "pending" && (
+                  <>
+                    {" "}
+                    · {DECISIONS[report.status]} par {report.handlerName ?? "un administrateur"} le{" "}
+                    {formatShortDate(report.handledAt)}
+                  </>
+                )}
+              </p>
+            </div>
           </div>
 
           <Button
