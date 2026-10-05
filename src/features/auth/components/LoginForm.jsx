@@ -10,7 +10,7 @@ import Field from "./Field";
 import PasswordInput from "./PasswordInput";
 import styles from "./AuthForm.module.css";
 
-export default function LoginForm({ next }) {
+export default function LoginForm({ next, notice }) {
   const [state, formAction, pending] = useActionState(signIn, null);
   const [clientErrors, setClientErrors] = useState(null);
   const formRef = useRef(null);
@@ -34,6 +34,12 @@ export default function LoginForm({ next }) {
 
   return (
     <form ref={formRef} action={formAction} onSubmit={handleSubmit} className={styles.form} noValidate>
+      {notice && !state && (
+        <p className={styles.notice} role="status">
+          {notice}
+        </p>
+      )}
+
       {state?.formError && !clientErrors && (
         <p className={styles.alert} role="alert">
           {state.formError}

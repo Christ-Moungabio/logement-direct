@@ -82,7 +82,11 @@ export async function signUp(_previousState, formData) {
 
   const supabase = await createClient();
   const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-  if (signInError) redirect("/connexion");
+  if (signInError) {
+    const params = new URLSearchParams({ compte: "cree" });
+    if (next) params.set("next", next);
+    redirect(`/connexion?${params}`);
+  }
 
   redirect(destinationForRole(next, role));
 }
