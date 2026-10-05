@@ -7,11 +7,18 @@ export function listingTitle(listing) {
   return listing.neighborhood ? `${type} à ${listing.neighborhood}` : type;
 }
 
+const MISSING_PHRASES = {
+  type: "le type de bien",
+  place: "la ville et le quartier",
+  rent: "le loyer",
+  advance: "l'avance demandée",
+  description: "la description",
+  water: "l'eau",
+  electricity: "l'électricité",
+  availability: "la disponibilité",
+  photos: "au moins une photo",
+};
+
 export function missingFields(listing) {
-  const missing = [];
-  if (listing.photoCount === 0) missing.push("photos");
-  if (!listing.hasDescription) missing.push("description");
-  if (!listing.rent) missing.push("loyer");
-  if (!listing.neighborhood) missing.push("quartier");
-  return missing;
+  return listing.progress.missing.map((key) => MISSING_PHRASES[key]);
 }

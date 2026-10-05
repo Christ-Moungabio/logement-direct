@@ -2,8 +2,9 @@ import Image from "next/image";
 import { ImageIcon } from "lucide-react";
 import { formatAmount, formatPrice, formatShortDate } from "../../../../lib/format";
 import { CLOSE_REASONS, STATUSES } from "../status";
-import { listingTitle, missingFields } from "../summary";
+import { listingTitle } from "../summary";
 import AvailabilityControl from "./AvailabilityControl";
+import DraftProgress from "./DraftProgress";
 import RowActions from "./RowActions";
 import styles from "./OwnerListings.module.css";
 
@@ -40,10 +41,8 @@ function footnote(listing) {
       return `Visible par les locataires vers ${visibleTime(listing.visibleFrom)}`;
     case "closed":
       return `Fermée · ${CLOSE_REASONS[listing.closeReason] ?? ""}`;
-    default: {
-      const missing = missingFields(listing);
-      return missing.length ? `À compléter : ${missing.join(", ")}` : "Prête à être publiée";
-    }
+    default:
+      return null;
   }
 }
 
@@ -108,6 +107,8 @@ export default function OwnerListingCard({ listing }) {
           </div>
         )}
 
+        {listing.status === "draft" && <DraftProgress listing={listing} />}
+
         {listing.status === "hidden" && (
           <p className={styles.reason}>
             <strong>Masquée par l&apos;équipe</strong>
@@ -118,7 +119,7 @@ export default function OwnerListingCard({ listing }) {
 
       {listing.status !== "hidden" && (
         <div className={styles.footer}>
-          <span className={styles.footnote}>{footnote(listing)}</span>
+          {footnote(listing) && <span className={styles.footnote}>{footnote(listing)}</span>}
           <RowActions listing={listing} />
         </div>
       )}
