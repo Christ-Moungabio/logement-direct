@@ -25,7 +25,7 @@
 .title {
    margin: 0 0 12px;
   font-size: 48px;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1.05;
   color: #1e293b;
   letter-spacing: -0.5px;
@@ -96,13 +96,13 @@
 .filtersTitle {
   margin: 0;
   font-size: 17px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .resetLink {
   font-size: 17px;
   color: #111827;
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .field {
@@ -113,7 +113,7 @@
 .label {
   padding: 0;
   font-size: 15px;
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .select,
@@ -182,7 +182,7 @@
   background: var(--color-primary);
   color: #fff;
   font-size: 16px;
-  font-weight: 900;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -246,7 +246,7 @@
 
 .emptyTitle {
   margin: 0;
-  font-weight: 900;
+  font-weight: 650;
 }
 
 .emptyText {
