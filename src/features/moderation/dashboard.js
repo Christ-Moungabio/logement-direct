@@ -101,3 +101,88 @@ export function buildKpis({ listings, pendingReports, accounts }, now = new Date
     },
   ];
 }
+
+export const PERIODS = {
+  14: { label: "14 j", param: null },
+  30: { label: "30 j", param: "30" },
+  all: { label: "Tout", param: "tout" },
+};
+
+export function periodFromParam(param) {
+  const match = Object.entries(PERIODS).find(([, period]) => period.param === param);
+  return match ? match[0] : "14";
+}
+
+const dayLabelFormatter = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", timeZone: "UTC" });
+
+function dayLabel(key) {
+  return dayLabelFormatter.format(new Date(key));
+}
+
+function chartTop(max) {
+  if (max <= 4) return 4;
+  return Math.ceil(max / 2) * 2;
+}
+
+export function buildCreatedChart(listings, period, now = new Date()) {
+  const createdKeys = listings.map((listing) => dayKey(listing.createdAt));
+  const today = dayKey(now);
+  const firstKey = createdKeys.reduce((first, key) => (key < first ? key : first), today);
+  const spanDays = Math.round((Date.parse(today) - Date.parse(firstKey)) / DAY) + 1;
+  const dayCount = period === "all" ? Math.max(14, spanDays) : Number(period);
+  const days = lastDays(dayCount, now);
+  const weekly = dayCount > 60;
+
+  const buckets = [];
+  if (weekly) {
+    for (let end = days.length; end > 0; end -= 7) {
+      buckets.unshift(days.slice(Math.max(0, end - 7), end));
+    }
+  } else {
+    days.forEach((day) => buckets.push([day]));
+  }
+
+  const bars = buckets.map((bucket) => {
+    const first = bucket[0];
+    const last = bucket[bucket.length - 1];
+    const count = createdKeys.filter((key) => key >= first && key <= last).length;
+    const when = weekly ? `Semaine du ${dayLabel(first)}` : dayLabel(first);
+    return { key: first, count, tip: `${when} : ${count} annonce${count > 1 ? "s" : ""}` };
+  });
+
+  const total = bars.reduce((sum, bar) => sum + bar.count, 0);
+  const top = chartTop(Math.max(...bars.map((bar) => bar.count)));
+  const middle = Math.floor((bars.length - 1) / 2);
+
+  return {
+    total,
+    weekly,
+    bars,
+    ticks: [0, top / 2, top],
+    top,
+    labels: [bars[0], bars[middle], bars[bars.length - 1]].map((bar) => dayLabel(bar.key)),
+    caption: period === "all" ? "depuis le début" : `sur les ${dayCount} derniers jours`,
+  };
+}
+
+const STATUS_GROUPS = [
+  { key: "live", label: "En ligne", tone: "success" },
+  { key: "scheduled", label: "Mise en ligne", tone: "primary" },
+  { key: "draft", label: "Brouillons", tone: "neutral" },
+  { key: "hidden", label: "Masquées", tone: "danger" },
+  { key: "closed", label: "Fermées", tone: "dark" },
+];
+
+function statusGroup(listing, now) {
+  if (isLive(listing, now)) return "live";
+  return listing.status;
+}
+
+export function buildStatusBreakdown(listings, now = new Date()) {
+  const total = listings.length;
+  const rows = STATUS_GROUPS.map((group) => {
+    const count = listings.filter((listing) => statusGroup(listing, now) === group.key).length;
+    return { ...group, count, percent: total ? Math.round((count / total) * 100) : 0 };
+  });
+  return { total, rows };
+}

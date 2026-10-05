@@ -2,9 +2,17 @@ import Link from "next/link";
 import { capitalize } from "../../lib/format";
 import { requireRole } from "../../src/features/auth/queries";
 import AdminPageHeader from "../../src/features/moderation/components/AdminPageHeader";
+import CreatedChart from "../../src/features/moderation/components/CreatedChart";
 import KpiStrip from "../../src/features/moderation/components/KpiStrip";
+import StatusBreakdown from "../../src/features/moderation/components/StatusBreakdown";
 import shell from "../../src/features/moderation/components/AdminShell.module.css";
-import { buildKpis } from "../../src/features/moderation/dashboard";
+import dashboard from "../../src/features/moderation/components/Dashboard.module.css";
+import {
+  buildCreatedChart,
+  buildKpis,
+  buildStatusBreakdown,
+  periodFromParam,
+} from "../../src/features/moderation/dashboard";
 import { getDashboardData } from "../../src/features/moderation/queries";
 
 export const metadata = { title: "Administration" };
@@ -17,8 +25,10 @@ const todayFormatter = new Intl.DateTimeFormat("fr-FR", {
   timeZone: "Africa/Brazzaville",
 });
 
-export default async function AdminHomePage() {
+export default async function AdminHomePage({ searchParams }) {
   await requireRole("admin", "/admin");
+  const { periode } = await searchParams;
+  const period = periodFromParam(periode);
   const data = await getDashboardData();
   const pending = data.pendingReports.length;
 
@@ -35,6 +45,11 @@ export default async function AdminHomePage() {
       </AdminPageHeader>
 
       <KpiStrip kpis={buildKpis(data)} />
+
+      <div className={dashboard.grid}>
+        <CreatedChart chart={buildCreatedChart(data.listings, period)} period={period} />
+        <StatusBreakdown breakdown={buildStatusBreakdown(data.listings)} />
+      </div>
     </>
   );
 }
