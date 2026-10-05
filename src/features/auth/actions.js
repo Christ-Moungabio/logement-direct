@@ -27,6 +27,7 @@ function signupValues(formData) {
 
 export async function signUp(_previousState, formData) {
   const values = signupValues(formData);
+  const next = safeNextPath(formData.get("next"));
   const parsed = signupSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) {
     return { values, errors: fieldErrors(parsed.error) };
@@ -83,7 +84,7 @@ export async function signUp(_previousState, formData) {
   const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
   if (signInError) redirect("/connexion");
 
-  redirect(homeForRole(role));
+  redirect(next ?? homeForRole(role));
 }
 
 const LOGIN_ERROR = "Adresse e-mail ou mot de passe incorrect.";

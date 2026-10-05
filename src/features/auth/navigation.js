@@ -44,3 +44,8 @@ export function loginPath(next) {
   const safe = safeNextPath(next);
   return safe ? `/connexion?next=${encodeURIComponent(safe)}` : "/connexion";
 }
+
+export function signupPath(next) {
+  const safe = safeNextPath(next);
+  return safe ? `/inscription?next=${encodeURIComponent(safe)}` : "/inscription";
+}

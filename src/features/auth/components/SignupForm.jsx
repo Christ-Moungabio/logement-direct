@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Button from "../../../../components/ui/Button";
 import { signUp } from "../actions";
+import { loginPath } from "../navigation";
 import { fieldErrors, PASSWORD_MIN_LENGTH, signupSchema } from "../schemas";
 import Field from "./Field";
 import PasswordInput from "./PasswordInput";
@@ -14,7 +15,7 @@ const ROLES = [
   { value: "owner", title: "Je propose un logement", text: "Publiez vos annonces gratuitement." },
 ];
 
-export default function SignupForm({ initialRole }) {
+export default function SignupForm({ initialRole, next }) {
   const [state, formAction, pending] = useActionState(signUp, null);
   const [clientErrors, setClientErrors] = useState(null);
   const formRef = useRef(null);
@@ -43,6 +44,8 @@ export default function SignupForm({ initialRole }) {
           {state.formError}
         </p>
       )}
+
+      {next && <input type="hidden" name="next" value={next} />}
 
       <fieldset aria-describedby={errors.role ? "role-erreur" : undefined}>
         <legend className={`${styles.label} ${styles.legend}`}>Vous êtes</legend>
@@ -195,7 +198,7 @@ export default function SignupForm({ initialRole }) {
       </Button>
 
       <p className={styles.switch}>
-        Déjà un compte ? <Link href="/connexion">Se connecter</Link>
+        Déjà un compte ? <Link href={loginPath(next)}>Se connecter</Link>
       </p>
     </form>
   );
