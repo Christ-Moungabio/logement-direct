@@ -79,6 +79,7 @@ export default async function EditListingPage({ params }) {
           options={options}
           initialValues={toFormValues(listing)}
           submitLabel="Enregistrer"
+          previewPhotoUrl={photos.find((photo) => photo.isPrimary)?.url ?? null}
         />
         {isDraft && <PublishPanel listingId={id} checklist={publishChecklist(listing, photos.length)} />}
       </main>

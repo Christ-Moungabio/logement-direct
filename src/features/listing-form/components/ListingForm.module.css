@@ -140,3 +140,25 @@
     padding: var(--space-lg);
   }
 }
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: var(--space-xxl);
+  align-items: start;
+}
+
+.layout > aside {
+  position: sticky;
+  top: 96px;
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .layout > aside {
+    position: static;
+    order: -1;
+  }
+}
