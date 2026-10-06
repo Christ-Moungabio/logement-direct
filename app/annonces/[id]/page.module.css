@@ -1,0 +1,112 @@
+.page {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-3xl);
+}
+
+/* Place pour la barre de contact fixée en bas sur mobile. */
+@media (max-width: 1040px) {
+  .page[data-mobile-bar] {
+    padding-bottom: calc(var(--space-3xl) + 80px);
+  }
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  color: var(--color-body);
+  font-size: 14px;
+  font-weight: 550;
+  list-style: none;
+}
+.breadcrumb a:hover {
+  color: var(--color-ink);
+  text-decoration: underline;
+}
+
+/* Mobile : photos d'abord. Ordinateur : titre puis photos, comme le wireframe. */
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+.headingArea {
+  order: 2;
+}
+.galleryArea {
+  order: 1;
+}
+
+@media (min-width: 768px) {
+  .headingArea {
+    order: 1;
+  }
+  .galleryArea {
+    order: 2;
+  }
+}
+
+.reportTop {
+  display: none;
+}
+.reportBottom {
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-hairline);
+}
+
+@media (min-width: 641px) {
+  .reportTop {
+    display: block;
+    flex: none;
+  }
+  .reportBottom {
+    display: none;
+  }
+}
+
+/* Mobile : prix, contact, puis détails. Ordinateur : contact en colonne à droite.
+   Le bloc contact n'est rendu qu'une fois. */
+.layout {
+  display: grid;
+  gap: var(--space-xxl);
+  margin-top: var(--space-xxl);
+}
+
+.summary,
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxl);
+  min-width: 0;
+}
+
+.sticky {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 1041px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    grid-template-rows: auto 1fr;
+    column-gap: 56px;
+  }
+  .summary {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .aside {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .content {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .sticky {
+    position: sticky;
+    top: 96px;
+  }
+}
