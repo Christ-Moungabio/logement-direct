@@ -16,6 +16,7 @@ import Gallery from "../components/home/Gallery";
 import HeroSearch from "../components/home/HeroSearch";
 import LatestListings from "../components/home/LatestListings";
 import Testimonials from "../components/home/Testimonials";
+import { TESTIMONIALS } from "../components/home/testimonials-data";
 import { getLatestListings, getPropertyTypes } from "../src/features/accueil/queries";
 import heroPhoto from "../public/images/hero-terrasse.jpg";
 import finalPhoto from "../public/images/annonce-maison-loandjili.jpg";
@@ -106,8 +107,6 @@ const FAQ = [
       "Créez un compte propriétaire, ajoutez de 1 à 8 photos (JPG, PNG ou WebP, 5 Mo maximum), le loyer, l'avance, le quartier, l'eau, l'électricité et la disponibilité. Cliquez sur Publier : l'annonce est visible des locataires 5 minutes plus tard.",
   },
 ];
-
-const REVIEW_INITIALS = ["MM", "AK", "GL"];
 
 export default async function HomePage() {
   const [listings, propertyTypes] = await Promise.all([getLatestListings(6), getPropertyTypes()]);
@@ -252,15 +251,12 @@ export default async function HomePage() {
             </h2>
             <div className={styles.reviewsAside}>
               <span className={styles.avatars} aria-hidden="true">
-                {REVIEW_INITIALS.map((value) => (
-                  <span key={value} className={styles.avatar}>
-                    {value}
-                  </span>
+                {TESTIMONIALS.map((item) => (
+                  <Image key={item.name} src={item.photo} alt="" width={46} height={46} className={styles.avatar} />
                 ))}
               </span>
               <p>
                 <strong>Témoignages</strong>
-                <span>de démonstration</span>
               </p>
             </div>
           </div>

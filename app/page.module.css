@@ -351,15 +351,10 @@ select.searchInput {
 .avatar {
   width: 46px;
   height: 46px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   border: 3px solid var(--color-canvas);
   border-radius: var(--radius-full);
   background: var(--color-primary-soft);
-  color: var(--color-primary);
-  font-size: 13px;
-  font-weight: 700;
+  object-fit: cover;
 }
 .avatar + .avatar {
   margin-left: -12px;
