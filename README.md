@@ -108,7 +108,7 @@ cp .env.example .env.local
 | `SUPABASE_SECRET_KEY` | Clé secrète (`sb_secret_…`), côté serveur uniquement : inscription et script de seed | Supabase : Project Settings, API Keys |
 | `DATABASE_URL` | Chaîne de connexion PostgreSQL, pour appliquer les migrations | Supabase : Connect |
 | `NEXT_PUBLIC_SITE_URL` | Facultatif : URL publique du site, utilisée dans les messages WhatsApp | URL de production |
-| `DEMO_TENANT_PASSWORD`, `DEMO_OWNER_PASSWORD`, `DEMO_ADMIN_PASSWORD` | Mots de passe des comptes de démonstration, lus par le seed (12 caractères minimum) | Groupe de l'équipe |
+| `DEMO_TENANT_PASSWORD`, `DEMO_OWNER_PASSWORD`, `DEMO_ADMIN_PASSWORD` | Mots de passe des comptes de démonstration, lus par le seed (12 caractères minimum) | Valeurs du tableau « Comptes de démonstration » ; celui de l'administrateur est communiqué par l'équipe |
 
 Les fichiers `.env` et `.env.local` ne sont **jamais** commités. La clé `SUPABASE_SECRET_KEY` contourne la sécurité de la base : elle reste côté serveur et ne porte jamais le préfixe `NEXT_PUBLIC_`.
 
@@ -138,13 +138,13 @@ Le site est disponible sur http://localhost:3000.
 
 Ils sont créés par `npm run db:seed`. On se connecte sur `/connexion` avec l'adresse e-mail et le mot de passe.
 
-| Rôle | E-mail | Arrive sur |
-| --- | --- | --- |
-| Locataire | `locataire@ndako.cg` | `/recherche` |
-| Propriétaire | `proprietaire@ndako.cg` | `/espace` |
-| Administrateur | `admin@ndako.cg` | `/admin` |
+| Rôle | E-mail | Mot de passe | Arrive sur |
+| --- | --- | --- | --- |
+| Locataire | `locataire@ndako.cg` | `Ndako-Locataire-2026` | `/recherche` |
+| Propriétaire | `proprietaire@ndako.cg` | `Ndako-Proprio-2026` | `/espace` |
+| Administrateur | `admin@ndako.cg` | communiqué par l'équipe | `/admin` |
 
-> Les mots de passe ne sont pas écrits dans le dépôt : ils sont partagés sur le groupe de l'équipe et lus par le seed dans `.env.local`. Le compte administrateur ne peut pas être créé depuis l'inscription publique.
+> Les mots de passe locataire et propriétaire servent à tester le site. Celui de l'administrateur n'est pas écrit dans le dépôt : l'équipe le communique, et le seed le lit dans `.env.local`. Le compte administrateur ne peut pas être créé depuis l'inscription publique.
 
 ### Commandes
 
@@ -312,7 +312,7 @@ Chaque développeur a pris un module de la SPEC.
 - **Droits vérifiés côté serveur** à chaque action, et imposés une seconde fois par la base (RLS, triggers).
 - **Clé secrète Supabase** utilisée uniquement côté serveur (`src/lib/supabase/admin.js`, protégé par `server-only`) et par le seed.
 - **Numéro du propriétaire** lu seulement pour un utilisateur connecté (fonction `get_listing_contact`).
-- **Aucun secret dans le dépôt** : variables dans `.env.local`, mots de passe de démonstration partagés hors du dépôt.
+- **Aucun secret dans le dépôt** : variables dans `.env.local`, mot de passe du compte administrateur partagé hors du dépôt.
 - **Interface mobile d'abord**, en français, montants au format `150 000 FCFA`, fuseau horaire de Brazzaville.
 - **Schéma versionné** : toute évolution de la base passe par un nouveau fichier dans `supabase/migrations/`.
 
