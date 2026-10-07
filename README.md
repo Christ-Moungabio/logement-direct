@@ -12,7 +12,7 @@ Projet réalisé par la **Squad 8** pendant l'Évaluation 2 (Sprint Produit en S
 
 Application : Next.js 16 (frontend et backend dans le même projet), base de données PostgreSQL sur Supabase.
 
-**Démo en ligne :** _à renseigner après le déploiement_
+**Démo en ligne :** https://ndako-squad8.vercel.app/
 
 ## Aperçu
 
@@ -203,6 +203,7 @@ Chaque dossier de `src/features/` regroupe ses lectures (`queries.js`), ses Serv
 | Validation | Zod |
 | Interface | CSS Modules, police Plus Jakarta Sans, icônes Lucide |
 | Qualité | ESLint |
+| Hébergement | Vercel |
 
 Il n'y a pas de backend séparé : les pages lisent les données côté serveur et les modifications passent par des Server Actions. Toutes les requêtes utilisent la session de l'utilisateur, et la base refuse ce que son rôle ne permet pas.
 
@@ -337,7 +338,7 @@ Le **Product Package** de la Squad est dans le [dossier partagé](https://drive.
 
 ## Démo (soutenance)
 
-Scénario type, à partir des parcours de la SPEC :
+Scénario type sur https://ndako-squad8.vercel.app/, à partir des parcours de la SPEC :
 
 1. **Trouver un logement** : depuis l'accueil, lancer une recherche, affiner par quartier et loyer, ouvrir une fiche, se connecter avec le compte locataire et contacter le propriétaire par WhatsApp.
 2. **Publier un logement** : se connecter avec le compte propriétaire, créer une annonce avec ses photos, la publier, puis la voir apparaître dans la recherche 5 minutes plus tard.
