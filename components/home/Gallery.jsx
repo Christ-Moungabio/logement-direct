@@ -3,13 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, LogIn, MapPin } from "lucide-react";
+import { ArrowLeft, ArrowRight, MapPin, Search } from "lucide-react";
 import salon from "../../public/images/galerie-salon.jpg";
 import studio from "../../public/images/galerie-studio.jpg";
 import cuisine from "../../public/images/galerie-cuisine.jpg";
 import { UTILITY_LABELS } from "../../lib/constants";
 import { formatAmount, formatAvailability, formatShortDate } from "../../lib/format";
-import { loginPath } from "../../src/features/auth/navigation";
 import styles from "./Gallery.module.css";
 
 const PHOTOS = [
@@ -89,7 +88,10 @@ export default function Gallery() {
         </div>
 
         <article className={styles.listing}>
-          <span className={styles.badge}>{formatAvailability(SAMPLE.availability)}</span>
+          <div className={styles.listingTop}>
+            <span className={styles.sample}>Exemple d&apos;annonce</span>
+            <span className={styles.badge}>{formatAvailability(SAMPLE.availability)}</span>
+          </div>
           <h3 className={styles.listingTitle}>Appartement</h3>
           <p className={styles.listingPlace}>
             <MapPin size={15} strokeWidth={2.2} aria-hidden="true" />
@@ -122,11 +124,13 @@ export default function Gallery() {
             Publiée le {formatShortDate(SAMPLE.publishedAt)} · mise à jour le {formatShortDate(SAMPLE.updatedAt)}
           </p>
           <p className={styles.listingNote}>Adresse exacte communiquée par le propriétaire.</p>
-          <Link href={loginPath("/recherche")} className={styles.listingCta}>
-            <LogIn size={17} strokeWidth={2.4} aria-hidden="true" />
-            Se connecter pour contacter
+          <Link href="/recherche" className={styles.listingCta}>
+            <Search size={17} strokeWidth={2.4} aria-hidden="true" />
+            Voir les annonces disponibles
           </Link>
-          <p className={styles.demo}>WhatsApp et appel visibles une fois connecté · annonce de démonstration</p>
+          <p className={styles.contactNote}>
+            Sur une vraie annonce, le WhatsApp et le numéro du propriétaire s&apos;affichent une fois connecté.
+          </p>
         </article>
       </div>
     </div>
